@@ -42,7 +42,7 @@ if __name__ == '__main__':
 	for x in range(1,10):
 		ll.push(x)
 	ll.printll()
-	ll.nth_from_last(ll.head, 10)
+	ll.nth_from_last(ll.head, 8)
 
 
 
