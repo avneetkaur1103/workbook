@@ -1,0 +1,8 @@
+postfix -> post order traversel from left to right of expression tree
+prefix  -> reverse of(post order traversal from right to left:  *+AB-CD => (Infix : (A+B) * (C-D) )) 
+		=> reverse(prefix) => post-order from right to left => this idea can be used to build infix string back considering prefix as postfix
+
+[Just a thought]Next Greater element seems to be greedy varient of LIS from the perspective it looks only just right or left to make a descision.
+
+Reverse a stack in O(n) with O(1) space -> use linked list representation of stack.
+Sort a stack / reverse a stack -> use function call stack to save element and insert at desired position while rewinding.
