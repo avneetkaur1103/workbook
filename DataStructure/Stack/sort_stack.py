@@ -37,7 +37,7 @@ class Stack:
 			
 
 def sorted_insert(stack, value):
-	if stack.empty() or ((not stack.empty()) and stack.top() < value):
+	if stack.empty() or stack.top() < value:
 		stack.push(value)
 		return
 

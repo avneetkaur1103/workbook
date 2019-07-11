@@ -1,0 +1,10 @@
+n-th catalan number.
+   T(n) = (2n)! / (n+1)!n! => [0,n-1]sum(T(i)*T(n-i-1))
+
+Masters Theorem:
+https://www.geeksforgeeks.org/analysis-algorithm-set-4-master-method-solving-recurrences/
+T(n) = aT(n/b) + f(n) |Where b>1 and a>=1
+There are following three cases:
+1. If f(n) = Θ(n^c) where c < Log(b)a then T(n) = Θ(n^Log(b)a)
+2. If f(n) = Θ(n^c) where c = Log(b)a then T(n) = Θ(n^c*Log n)
+3.If f(n) = Θ(n^c) where c > Log(b)a then T(n) = Θ(f(n))

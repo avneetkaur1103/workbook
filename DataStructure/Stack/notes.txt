@@ -6,3 +6,5 @@ prefix  -> reverse of(post order traversal from right to left:  *+AB-CD => (Infi
 
 Reverse a stack in O(n) with O(1) space -> use linked list representation of stack.
 Sort a stack / reverse a stack -> use function call stack to save element and insert at desired position while rewinding.
+
+Splitting related data in parallel arrays has saved the problem in a lot of cases -> Next greater freequency elements, Largest rectengular area etc.
