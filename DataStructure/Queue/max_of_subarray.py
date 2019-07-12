@@ -1,4 +1,4 @@
-''' Given an array and an integer K, find the maximum for each and every contiguous subarray of size k. '''
+""" Given an array and an integer K, find the maximum for each and every contiguous subarray of size k. """
 
 def k_subarray_max(input, k):
 	from collections import deque
@@ -24,6 +24,6 @@ def k_subarray_max(input, k):
 	return result
 
 if __name__ == '__main__':
-	result = k_subarray_max([ 12, 1, 78, 90, 57, 89, 56 ],3)
+	result = k_subarray_max([12, 1, 78, 90, 57, 89, 56],3)
 	print('Ans: ' + str(result))
 
