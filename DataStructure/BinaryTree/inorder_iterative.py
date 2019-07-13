@@ -30,16 +30,16 @@ class Stack:
 
 def inorder(root):
 	stack = Stack()
-	stack.push(root)
-
-	while stack:
-		curr = stack.top()
+	# stack.push(root)
+	curr = root
+	while curr or stack:
 		while curr:
-			curr = curr.left
 			stack.push(curr) if curr else None
+			curr = curr.left
 		curr = stack.pop()
 		print(curr.key, end=' ')
-		stack.push(curr.right) if curr.right else None
+		# stack.push(curr.right) if curr.right else None
+		curr = curr.right
 
 if __name__ == '__main__':
 	root = Node(1) 
