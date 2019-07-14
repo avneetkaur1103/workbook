@@ -8,3 +8,11 @@ There are following three cases:
 1. If f(n) = Θ(n^c) where c < Log(b)a then T(n) = Θ(n^Log(b)a)
 2. If f(n) = Θ(n^c) where c = Log(b)a then T(n) = Θ(n^c*Log n)
 3.If f(n) = Θ(n^c) where c > Log(b)a then T(n) = Θ(f(n))
+
+It is not possible to construct a general Binary Tree from preorder and postorder traversals.
+
+Minimum number of swaps required to sort an array => Swap position graph can be visualized as many non intersection swap circle.
+
+From inorder & postorder to tree => reverse-preoder(postorder) order is taken as guide (left-right-root) & in-order is used in partition & return left & right sets(unorder, guides by postorder to place values in right place)
+
+From inorder & levelorder to tree => level order is taken as structure guide(root- left - right ) & in-order is used in partition & return left & right sets(unorder, guides by intersection(levelorder,left subset){only the levels in left} and intersection(levelorder,right subset){only the levels in right} to place values in right place)[Unclear]

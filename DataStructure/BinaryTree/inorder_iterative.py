@@ -32,7 +32,7 @@ def inorder(root):
 	stack = Stack()
 	# stack.push(root)
 	curr = root
-	while curr or stack: # with current we dissect the call stack in 2, 1 current call cell and rest stacked up
+	while curr or stack:  # with curr we dissect the call stack in 2, 1 current call cell and rest stacked up
 		while curr:
 			stack.push(curr) if curr else None
 			curr = curr.left
