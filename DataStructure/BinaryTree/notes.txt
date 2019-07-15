@@ -21,3 +21,12 @@ Given an arbitrary binary tree, convert it to a binary tree that holds Children 
 if diff is 0 then nothing needs to be done.
 If diff > 0 ( node’s data is smaller than node’s children sum) increment the node’s data by diff.
 If diff < 0 (node’s data is greater than the node's children sum) then increment one child’s data.
+
+Given two binary trees, check if the first tree is subtree of the second one. 
+Tree S is a subtree of T if both inorder and preorder traversals of S are substrings of inorder and preorder traversals of T respectively.
+Can also be done like checking substring of seralized tree string.
+
+Iterative function to check if two trees are identical.
+Use level order traversal. We traverse both trees simultaneously and compare the data whenever we dequeue and [item from queue(imp)].
+
+https://www.geeksforgeeks.org/print-middle-level-perfect-binary-tree-without-finding-height/
