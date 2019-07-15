@@ -30,3 +30,6 @@ Iterative function to check if two trees are identical.
 Use level order traversal. We traverse both trees simultaneously and compare the data whenever we dequeue and [item from queue(imp)].
 
 https://www.geeksforgeeks.org/print-middle-level-perfect-binary-tree-without-finding-height/
+
+Check if a Binary Tree contains duplicate subtrees of size 2[Non-leaf] or more => can be used in compression
+The idea is to serialize subtrees as strings and store the strings in hash table. Once we find a serialized tree (which is not a leaf) already existing in hash-table, we return true.
