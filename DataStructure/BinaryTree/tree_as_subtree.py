@@ -15,7 +15,7 @@ def preorder(root):
 def inorder(root):
 	io = ""
 	if root:
-		io += inorder(root.left)
+		io += inorder(root.left)  # += beacuse string is immutable
 		io += str(root.key)
 		io += inorder(root.right)
 	return io

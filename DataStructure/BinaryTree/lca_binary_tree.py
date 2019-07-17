@@ -46,6 +46,20 @@ def find_lca(root, n1, n2):
 		return lca
 	return None
 
+def print_path_to_node(root, node):
+	if root:
+		if print_path_to_node(root.left,node) or print_path_to_node(root.right, node) or root.key == node.key:
+			print(root.key, end=' ')
+			return True
+	return False
+
+def print_common_path(root, n1, n2):
+	lca = find_lca(root, n1, n2)
+	if lca:
+		print_path_to_node(root, lca)
+	else:
+		print('No common ancestor')
+
 if __name__ == '__main__':
 	root = Node(1) 
 	root.left = Node(2) 
@@ -55,7 +69,9 @@ if __name__ == '__main__':
 	root.right.left = Node(6) 
 	root.right.right = Node(7)
 	print("LCA = ", find_lca(root,4,5))
-	print("LCA = ", find_lca(root, 4, 10))
+	# print("LCA = ", find_lca(root, 4, 10))
+	print('Common ancestors: ')
+	print_common_path(root,4,5)
 
 
 
