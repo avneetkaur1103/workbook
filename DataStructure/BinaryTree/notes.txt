@@ -32,4 +32,8 @@ Use level order traversal. We traverse both trees simultaneously and compare the
 https://www.geeksforgeeks.org/print-middle-level-perfect-binary-tree-without-finding-height/
 
 Check if a Binary Tree contains duplicate subtrees of size 2[Non-leaf] or more => can be used in compression
-The idea is to serialize subtrees as strings and store the strings in hash table. Once we find a serialized tree (which is not a leaf) already existing in hash-table, we return true.
+The idea is to serialize subtrees as strings and store the strings in hash table. Once we find a serialized tree (which is not a leaf) already existing in hash-table, we return true. # pre-order uniquely represent a full binary tree / can reconstruct tree / can be used in encoding too
+
+If we take few examples, we can notice that the value of h in a complete binary tree is ceil(log2(N+1)) – 1.
+
+A succinct encoding of Binary Tree takes close to minimum possible space. The number of structurally different binary trees on n nodes is n’th Catalan number. For large n, this is about 4n; thus we need at least about log2 4 n = 2n bits to encode it. A succinct binary tree therefore would occupy 2n+o(n) bits.

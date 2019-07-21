@@ -12,10 +12,10 @@ def has_duplicate_subtree(root):
 	hashed_str = MARKER
 	if root:
 		sub_in_left, left = has_duplicate_subtree(root.left)
-		sub_in_right, right = has_duplicate_subtree(root.right)
+		sub_in_right, right = has_duplicate_subtree(root.right) # travesing postorder to obtain all subtree
 		if sub_in_left or sub_in_right:
 			return True, left if sub_in_left else right
-		hashed_str = left + root.key + right
+		hashed_str = root.key + left + right  # pre-order uniquely represent a full binary tree / can reconstruct tree / can be used in encoding
 		if len(hashed_str) > 3:
 			if hashed_str in has_duplicate_subtree.hash_set:
 				return True, hashed_str

@@ -1,0 +1,1 @@
+Construct BST from its given level order traversal => Just construct the bst with level order as input sequence => as in level order root is captured before child and in case of BST if root is placed right children will take it proper place because of key property.
