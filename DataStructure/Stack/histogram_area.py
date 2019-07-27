@@ -46,9 +46,6 @@ def max_area_histogram(input):
 
 
 
-
-
-
 if __name__ == '__main__':
 	# Driver Code 
 	hist = [6, 2, 5, 4, 5, 1, 6] 

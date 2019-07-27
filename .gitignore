@@ -2,3 +2,5 @@
 .idea/
 # ignore pyc
 *.pyc
+# ignore venv
+venv/
