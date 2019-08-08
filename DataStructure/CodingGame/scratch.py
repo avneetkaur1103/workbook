@@ -12,97 +12,48 @@ def debug(*args, **kwargs):
 Player = Enum('Player', 'P1 P2')
 
 class Board9:
-    all_moves = [[(i,j) for j in range(3)]]
+
     def __init__(self):
-        self.size = 3
-        self.boards = [[Board(3) for _ in range(3)] for _ in range(3)]
-        self.win_board = [[-1 for _ in range(3)] for _ in range(3)]
-        self.next_player = 1
-        self.moves = list()
-        '''
-        for i in range(9):
-            for j in range(9):
-                self.moves.append((i, j))
-        '''
+        self.boards = [[Board() for _ in range(3)] for _ in range(3)]
+        self.active_board = None
 
     def legal_moves(self):
-        return self.moves
-
-    def add_legal_move(self, move):
-        self.moves.append(move)
-
-    def clear_legal_moves(self):
-        self.moves.clear()
+        pass
 
     def current_player(self):
         return self.next_player
-
-    def _next_legal_moves(self, br, bc):
-        for in
-
-    def next_state(self, move):
-        i, j = move
-        board_r, board_c = i//3, j//3
-        x, y = i%3, j%3
-        active_board = self.boards[board_r][board_c]
-        active_board.matrix[x][y] = self.next_player
-        result = self.compact_state()
-        active_board.matrix[x][y] = -1
-        return result
-
-    def play(self, move):
-        self.moves.remove(move) if self.next_player == 1 else None
-        # debug(f'Moves: {move}')
-        i, j = move
-        board_r, board_c = i // 3, j // 3
-        x, y = i % 3, j % 3
-        # debug(f'br,bc {i},{j} | x,y: {x},{y}')
-        active_board = self.boards[board_r][board_c]
-        active_board.matrix[x][y] = self.next_player
-        self.next_player ^= 1
-        # Updating legal moves for next player
-        self.clear_legal_moves()
-        self._next_legal_moves(x,y)
-
-    def compact_state(self):
-        result = ''
-        for rboards in self.boards:
-            for board in rboards:
-                result += board.compact_state()
-        return result
-
-    def winner(self):
-        for i, rboards in enumerate(self.boards):
-            for j, board in enumerate(rboards):
-                self.win_board[i][j] = board.winner()
-
-        for i in range(self.size):  # check rows n columns
-            if sum(self.win_board[i]) == self.size or sum(self.win_board[:][i]) == self.size:
-                return 1  # Player 1
-            elif sum(self.win_board[i]) == 0 or sum(self.win_board[:][i]) == 0:
-                return 0  # Player 0
-
-        diag = [r[i] for i, r in enumerate(self.win_board)]
-        rdiag = [r[-i-1] for i, r in enumerate(self.win_board)]
-        if sum(diag) == self.size or sum(rdiag) == self.size:
-            return 1 # Player 1
-        elif sum(diag) == 0 or sum(rdiag) == 0:
-            return 0 # Player 0
-
-        ones = sum([row.count(1) for row in self.win_board])
-        zeros = sum([row.count(0) for row in self.win_board])
-        return 1 if ones >= 5 else 0 if zeros >= 5 else -1
 
 class Board:
     def __init__(self, size):
         self.matrix = [[-1 for _ in range(size)] for _ in range(size)]
         self.size = size
-        self._winner = None
+        self.moves = list()
+        for i in range(size):
+            for j in range(size):
+                self.moves.append((i, j))
+        self.next_player = 1
+
+    def legal_moves(self):
+        return self.moves
+
+    def current_player(self):
+        return self.next_player
+
+    def next_state(self, move):
+        i, j = move
+        self.matrix[i][j] = self.next_player
+        result = self.compact_state()
+        self.matrix[i][j] = -1
+        return result
+
+    def play(self, move):
+        self.moves.remove(move)
+        # debug(f'Moves: {move}')
+        i, j = move
+        self.matrix[i][j] = self.next_player
+        self.next_player ^= 1
 
     def winner(self):
-        if self._winner and not self._winner == -1:
-            return self._winner
-
         for i in range(self.size):  # check rows n columns
             if sum(self.matrix[i]) == self.size or sum(self.matrix[:][i]) == self.size:
                 return 1  # Player 1
@@ -110,11 +61,11 @@ class Board:
                 return 0  # Player 0
 
         diag = [r[i] for i, r in enumerate(self.matrix)]
-        rdiag = [r[-i-1] for i, r in enumerate(self.matrix)]
+        rdiag = [r[-i - 1] for i, r in enumerate(self.matrix)]
         if sum(diag) == self.size or sum(rdiag) == self.size:
-            return 1 # Player 1
+            return 1  # Player 1
         elif sum(diag) == 0 or sum(rdiag) == 0:
-            return 0 # Player 0
+            return 0  # Player 0
 
         ones = sum([row.count(1) for row in self.matrix])
         zeros = sum([row.count(0) for row in self.matrix])
@@ -127,22 +78,15 @@ class Board:
                 result += str(val)
         return result
 
-
 class MCTS:
     def __init__(self, board, **kwargs):
         self.board = board
-        mseconds = kwargs.get('time', 900)
-        self.calculation_time = datetime.timedelta(milliseconds=mseconds)
-        self.max_moves = kwargs.get('max_moves', 100)
-        self.C = kwargs.get('C', 1.4)
-        self.plays = dict()
-        self.wins = dict()
-
-    def update_param(self, **kwargs):
         mseconds = kwargs.get('time', 70)
         self.calculation_time = datetime.timedelta(milliseconds=mseconds)
         self.max_moves = kwargs.get('max_moves', 9)
-
+        self.C = kwargs.get('C', 1.4)
+        self.plays = dict()
+        self.wins = dict()
 
     def get_play(self):
         self.max_depth = 0
@@ -178,20 +122,18 @@ class MCTS:
 
         # Display the stats for each possible play.
         for x in sorted(
-            ((100 * self.wins.get((player, S), 0) /
-              self.plays.get((player, S), 1),
-              self.wins.get((player, S), 0),
-              self.plays.get((player, S), 0), p)
-             for p, S in moves_states),
-            reverse=True
+                ((100 * self.wins.get((player, S), 0) /
+                  self.plays.get((player, S), 1),
+                  self.wins.get((player, S), 0),
+                  self.plays.get((player, S), 0), p)
+                 for p, S in moves_states),
+                reverse=True
         ):
             debug("{3}: {0:.2f}% ({1} / {2})".format(*x))
 
         debug(f"Maximum depth searched: {self.max_depth}")
 
         return move
-
-
 
     def run_simulation(self):
         # A bit of an optimization here, so we have a local
@@ -251,24 +193,21 @@ class MCTS:
             if player == winner:
                 wins[(player, state)] += 1
 
-
 # game loop
-board = Board9()
+board = Board(3)
 mcts = MCTS(board)
 while True:
     opponent_size, opponent_col = [int(i) for i in input().split()]
     debug(f'opponent_size: {opponent_size } opponent_col:{opponent_col}')
     board.play((opponent_size, opponent_col)) if not opponent_size == -1 else None
     valid_action_count = int(input())
-    board.clear_legal_moves()
     for i in range(valid_action_count):
         size, col = [int(j) for j in input().split()]
-        debug(f'size:{size}, col:{col}')
-        board.add_legal_move((size, col))
+        # debug(f'size:{size}, col:{col}')
 
     # Write an action using print
     # To debug: print("Debug messages...", file=sys.stderr)
     x, y = move = mcts.get_play()
     board.play(move)
-    mcts.update_param(time=70, max_moves=9) if opponent_size == -1 else None
+
     print(f"{x} {y}")
