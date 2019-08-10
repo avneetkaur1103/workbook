@@ -1,0 +1,3 @@
+parent_index = (index - 1) >> 1
+_siftup(pos)/heapify(pos) -> The child indices of heap index pos are already heaps, and we want to make a heap at index pos too.
+_siftdown(startpos, pos) -> 'heap' is a heap at all indices >= startpos, except possibly for pos.  pos is the index of a leaf with a possibly out-of-order value.  Restore the heap invariant.
