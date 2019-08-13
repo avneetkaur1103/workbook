@@ -15,8 +15,8 @@ def count_sort(arr, exp):
 		output[count[val]-1] = arr[i]
 		count[val] -= 1
 
-	print('Debug: Output', output)
-	arr = deepcopy(output)
+	for i in range(len(output)):
+		arr[i] = output[i]
 
 def radix_sort(arr):
 	max_ = max(arr)
@@ -28,6 +28,6 @@ def radix_sort(arr):
 
 
 arr = [12, 11, 13, 5, 6] 
-#insertion_sort(arr) 
+# insertion_sort(arr)
 radix_sort(arr)
 print('Sorted Array: ', arr)
