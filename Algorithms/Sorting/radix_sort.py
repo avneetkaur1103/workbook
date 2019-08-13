@@ -1,4 +1,5 @@
 """ Radix sort """
+from copy import deepcopy
 def count_sort(arr, exp):
 	count = [0] * 10
 	output = [None] * len(arr)
@@ -11,10 +12,11 @@ def count_sort(arr, exp):
 		count[i] += count[i-1]
 
 	for i, val in reversed(list(enumerate(map(l, arr)))):
-		output[val-1] = arr[i]
-		count[i] -= 1
+		output[count[val]-1] = arr[i]
+		count[val] -= 1
 
-	arr = output[:]
+	print('Debug: Output', output)
+	arr = deepcopy(output)
 
 def radix_sort(arr):
 	max_ = max(arr)
@@ -22,6 +24,7 @@ def radix_sort(arr):
 
 	while max_//exp:
 		count_sort(arr, exp)
+		exp = exp*10
 
 
 arr = [12, 11, 13, 5, 6] 
