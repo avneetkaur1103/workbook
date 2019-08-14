@@ -1,3 +1,16 @@
 parent_index = (index - 1) >> 1
+
 _siftup(pos)/heapify(pos) -> The child indices of heap index pos are already heaps, and we want to make a heap at index pos too.
 _siftdown(startpos, pos) -> 'heap' is a heap at all indices >= startpos, except possibly for pos.  pos is the index of a leaf with a possibly out-of-order value.  Restore the heap invariant.
+
+Problem with many binary search implementation:
+int mid = (low + high) / 2 => leads to overflow for large values
+use below instead
+int mid = low + ((high - low) / 2);
+
+Sorting waveform:
+1) Traverse all even positioned elements of input array, and do following.
+….a) If current element is smaller than previous odd element, swap previous and current.
+….b) If current element is smaller than next odd element, swap next and current.
+
+K-th smallest => Quick prtition => Avg O(n) / Worst O(n^2)

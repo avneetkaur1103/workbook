@@ -1,0 +1,4 @@
+An algorithm whose worst case time complexity depends on numeric value of input (not number of inputs) is called Pseudo-polynomial algorithm.
+There must be some first NP-Complete problem proved by definition of NP-Complete problems.  SAT (Boolean satisfiability problem) is the first NP-Complete problem proved by Cook
+
+Bubble Sort -  It can be optimized by stopping the algorithm if inner loop didn’t cause any swap => no adjecent swap means already sorted array.

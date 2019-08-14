@@ -25,7 +25,6 @@ def merge(left, right, arr):
 	while r < lr:
 		arr[i] = right[r]
 		r += 1 ; i += 1
-		
 
 def merge_sort(arr):
 	if len(arr) > 1 :
@@ -35,8 +34,21 @@ def merge_sort(arr):
 		merge_sort(right)
 		merge(left, right, arr)
 
+def shell_sort(arr):
+	gap = len(arr)//2
+
+	while gap:
+		for i in range(gap, len(arr)):
+			j = i ; temp = arr[i]
+			while j >=gap and arr[j-gap] > arr[j]:
+				arr[j] = arr[j-gap]
+				j -= gap
+			arr[j] = temp
+		gap //= 2
+			
+
 
 arr = [12, 11, 13, 5, 6] 
 #insertion_sort(arr) 
-merge_sort(arr)
+shell_sort(arr)
 print('Sorted Array: ', arr)
