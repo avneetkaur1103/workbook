@@ -14,3 +14,12 @@ Sorting waveform:
 ….b) If current element is smaller than next odd element, swap next and current.
 
 K-th smallest => Quick prtition => Avg O(n) / Worst O(n^2)
+
+DP Notes:
+Optimal Substructure: A given problems has Optimal Substructure Property if optimal solution of the given problem can be obtained by using optimal solutions of its subproblems. => this property of the problem reduces the search space from exponential to polynomial. Thus DPs can be solved in polynomial time.
+Exponential Algo => Evalution(All Possible state of size n)
+DP => Evluation(Problen size n) = Evalution(Subproblem size x: x < n) + decision weight
+Solving subproblems solves the original problem(All the subproblem solution can be build in O(1) from bottom-up)
+time(P) = time(subproblem) * #subproblem
+Bottom-up perspective we can really keep track of(soln to only those previous problem which helps build future problems) what we need to store and save space.
+For DP to work subproblem dependency should be acyclic
