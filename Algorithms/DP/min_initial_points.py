@@ -11,8 +11,7 @@ def min_points(arr):
             if i == nR - 1 and j == nC - 1:
                 dp[i][j] = 1 if arr[i][j] > 0 else 1 + abs(arr[i][j])
             elif i == nR - 1:
-                dp[i][j] = max(dp[i][j + 1] - arr[i][j], 1)  # DP[i][j] = Points Required when we reach next level
-            # arr[i][j] = Points available
+                dp[i][j] = max(dp[i][j + 1] - arr[i][j], 1)  # DP[i][j] = Points Required when we reach next level arr[i][j] = Points available
             elif j == nC - 1:
                 dp[i][j] = max(dp[i + 1][j] - arr[i][j], 1)
             else:
