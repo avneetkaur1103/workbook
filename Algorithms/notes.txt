@@ -28,3 +28,13 @@ Solving subproblems solves the original problem(All the subproblem solution can 
 time(P) = time(subproblem) * #subproblem
 Bottom-up perspective we can really keep track of(soln to only those previous problem which helps build future problems) what we need to store and save space.
 For DP to work subproblem dependency should be acyclic
+
+Devide&Conquer: Subproblems of the problem are impicitly solved T = 0 or solved in O(1). The time to solve the whole problem mostly depends upon time it takes to merge. If this time is smaller than the solving problem some other algorithmic way and subproblems are solved O(0) or O(1), then we should consider devide and conquer way. Time for D&C would mostly be calculated master theorem.
+
+Masters Theorem:
+https://www.geeksforgeeks.org/analysis-algorithm-set-4-master-method-solving-recurrences/
+T(n) = aT(n/b) + f(n) |Where b>1 and a>=1
+There are following three cases:
+1. If f(n) = Θ(n^c) where c < Log(b)a then T(n) = Θ(n^Log(b)a) | work at leaves are more | total work = no of leaves = n^Log(b)a
+2. If f(n) = Θ(n^c) where c = Log(b)a then T(n) = Θ(n^c*Log n) | #leaves = n (input size)| total work = work at leaves = height*work at each level
+3.If f(n) = Θ(n^c) where c > Log(b)a then T(n) = Θ(f(n)) | work at root exceeds | total work = work at root > no of leaves = f(n)
