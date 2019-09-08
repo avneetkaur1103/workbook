@@ -1,213 +1,164 @@
 import sys
 import math
-from enum import Enum
-from copy import deepcopy
-import datetime, random
+from collections import namedtuple
+from queue import Queue
 
 # Auto-generated code below aims at helping you parse
 # the standard input according to the problem statement.
 def debug(*args, **kwargs):
     print(*args, **kwargs, file=sys.stderr)
 
-Player = Enum('Player', 'P1 P2')
+width, height, my_id = [int(i) for i in input().split()]
+debug(f'width: {width} height: {height} my_id:{my_id}')
 
-class Board9:
+grid = [[-1 for _ in range(width)] for _ in range(height)]
+items = [[0 for _ in range(width)] for _ in range(height)]
+positions = [None, None]
+n_bombs = 0
+ranges = [None] * 4
+Cell = namedtuple('Cell', 'val own time range')
+class DPCell:
+    def __init__(self, val, dist, visited, min_bombing_duration):
+        self.val = val
+        self.dist = dist
+        self.visited = visited
+        self.min_bombing_duration = min_bombing_duration
 
+    def __iter__(self):
+        return iter([self.val, self.dist, self.visited, self.min_bombing_duration])
+
+class GameSimulation:
     def __init__(self):
-        self.boards = [[Board() for _ in range(3)] for _ in range(3)]
-        self.active_board = None
+        self.best_positions_bombs = None
+        self.best_positions_points = None
+        self.last_pos = None
+        self.safe_positions = None
+        self.dp = None # Simulation grid
 
-    def legal_moves(self):
-        pass
+    @staticmethod
+    def add_reacability(dp, pos):
+        i, j = pos
+        dp[i][j].dist, dp[i][j].visited = 0, True
+        q = Queue()
+        neighbours = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        q.put((dp[i][j], (i, j)))
 
-    def current_player(self):
-        return self.next_player
+        while q.qsize():
+            (_, dist, _, _), (i, j) = q.get()
+            for di, dj in neighbours:
+                if 0 <= i+di < height and 0 <= j+dj < width and not dp[i+di][j+dj].visited and dp[i+di][j+dj].min_bombing_duration == sys.maxsize and (grid[i+di][j+dj].val == -1 # Empty\
+                 or (grid[i+di][j+dj].val > 0 and items[i+di][j+dj] > 0)) :
+                    dp[i+di][j+dj].dist, dp[i+di][j+dj].visited = dist + 1, True
+                    q.put((dp[i+di][j+dj], (i+di, j+dj)))
 
-class Board:
-    def __init__(self, size):
-        self.matrix = [[-1 for _ in range(size)] for _ in range(size)]
-        self.size = size
-        self.moves = list()
-        for i in range(size):
-            for j in range(size):
-                self.moves.append((i, j))
-        self.next_player = 1
+    def init_board(self, pos):
+        self.dp.clear()
+        dp = self.dp
+        dp = [[DPCell(0, sys.maxsize, False, sys.maxsize) for _ in range(width)] for _ in range(height)]
+        for i in range(len(grid)):  # if bomb placed here
+            for j in range(len(grid[0])):
+                if grid[i][j].val >= 0:
+                    _range = ranges[my_id]
+                    for x in range(max(i-(_range-1), 0), min(i+(_range-1), height)):
+                        if grid[x][j].val == -2:
+                            break
+                        if grid[x][j].val == -1:
+                                dp[x][j].val += 1
+                    for y in range(max(j-(_range-1), 0), min(j+(_range-1), width)):
+                        if grid[i][y].val == -2:
+                            break
+                        if grid[i][y].val == -1:
+                                dp[i][y].val += 1
 
-    def legal_moves(self):
-        return self.moves
+    def add_bombs(self, pos):
+        dp = self.dp
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):                       
+                if grid[i][j].val == 3:  # if alreday a bomb here
+                _range = grid[i][j].time
+                    for x in range(max(i-(_range-1), 0), min(i+(_range-1), height)):
+                        if grid[x][j].val == -1:
+                                dp[x][j].val = 0
+                                dp[x][j].min_bombing_duration = min(dp[x][j].min_bombing_duration, grid[i][j].time)
+                    for y in range(max(j-(_range-1), 0), min(j+(_range-1), width)):
+                        if grid[i][y].val == -1:
+                                dp[i][y].val = 0
+                                dp[i][y].min_bombing_duration = min(dp[i][y].min_bombing_duration, grid[i][j].time)
+        self.add_reacability(dp, pos)
 
-    def current_player(self):
-        return self.next_player
+    def evaluate_game(self, pos)
+        dp = self.dp
+        self.init_board(pos) # static without bombs
+        self.add_bombs(pos)
+        
+        # debug(f'dp: {dp}')
+        self.best_positions_bombs = sorted([(dp[i][j].val, -1*dp[i][j].dist, (i,j)) for j in range(len(dp[0])) for i in range(len(dp)) if not dp[i][j].min_bombing_duration == sys.maxsize or not dp[i][j].dist == sys.maxsize], key=lambda elem: (elem[0], elem[1]), reverse=True)
+        debug(f'best_positions_bombs: {self.best_positions_bombs}')
+        self.best_positions_points = sorted([(abs(pos[0] - i) + abs(pos[1] - j), (i, j)) for j in range(len(items[0])) for i in range(len(items)) if items[i][j] and dp[i][j].min_bombing_duration == sys.maxsize])
+        debug(f'best_positions_points: {self.best_positions_points}')
+        return dp
 
-    def next_state(self, move):
-        i, j = move
-        self.matrix[i][j] = self.next_player
-        result = self.compact_state()
-        self.matrix[i][j] = -1
-        return result
+    def try_bomb_at(self, plant_bomb_at):
+        i, j = plant_bomb_at
+        temp = grid[i][j]
+        grid[i][j] = Cell(3, my_id, 8, ranges[my_id]) # simulation 
+        self.evaluate_bombs(self, plant_bomb_at)
+        grid[i][j] = temp
+        if not safe_positions:
+            return None
+        return plant_bomb_at
 
-    def play(self, move):
-        self.moves.remove(move)
-        # debug(f'Moves: {move}')
-        i, j = move
-        self.matrix[i][j] = self.next_player
-        self.next_player ^= 1
+    def play(self, pos):
+        bp = None
+        while not bp:
+            if n_bombs:
+                while self.best_positions_bombs:
+                    _, _, (x,y) = self.best_positions_bombs.pop(0)
+                    bp = self.try_bomb_at((x,y))
+                    if bp:
+                        debug(f'bp:{bp} pos: {curr_pos}')
+                        print(f"BOMB {bp[1]} {bp[0]}")
+                        return
+            if self.best_positions_points:
+                _, bp = self.best_positions_points.pop(0)
+            if self.safe_positions:
+                bp = self.safe_positions.pop(0)
+        if bp:
+            debug(f'bp:{bp} pos: {curr_pos}')
+            print(f'MOVE {bp[1]} {bp[0]}')
+        return
 
-    def winner(self):
-        for i in range(self.size):  # check rows n columns
-            if sum(self.matrix[i]) == self.size or sum(self.matrix[:][i]) == self.size:
-                return 1  # Player 1
-            elif sum(self.matrix[i]) == 0 or sum(self.matrix[:][i]) == 0:
-                return 0  # Player 0
-
-        diag = [r[i] for i, r in enumerate(self.matrix)]
-        rdiag = [r[-i - 1] for i, r in enumerate(self.matrix)]
-        if sum(diag) == self.size or sum(rdiag) == self.size:
-            return 1  # Player 1
-        elif sum(diag) == 0 or sum(rdiag) == 0:
-            return 0  # Player 0
-
-        ones = sum([row.count(1) for row in self.matrix])
-        zeros = sum([row.count(0) for row in self.matrix])
-        return 1 if ones >= 5 else 0 if zeros >= 5 else -1
-
-    def compact_state(self):
-        result = ''
-        for i, row in enumerate(self.matrix):
-            for j, val in enumerate(row):
-                result += str(val)
-        return result
-
-class MCTS:
-    def __init__(self, board, **kwargs):
-        self.board = board
-        mseconds = kwargs.get('time', 70)
-        self.calculation_time = datetime.timedelta(milliseconds=mseconds)
-        self.max_moves = kwargs.get('max_moves', 9)
-        self.C = kwargs.get('C', 1.4)
-        self.plays = dict()
-        self.wins = dict()
-
-    def get_play(self):
-        self.max_depth = 0
-        state = self.board.compact_state()
-        player = self.board.current_player()
-        legal = self.board.legal_moves()
-
-        # Bail out early if there is no real choice to be made.
-        if not legal:
-            return
-        if len(legal) == 1:
-            return legal[0]
-
-        games = 0
-        begin = datetime.datetime.utcnow()
-        while datetime.datetime.utcnow() - begin < self.calculation_time:
-            self.run_simulation()
-            games += 1
-
-        moves_states = [(p, self.board.next_state(p)) for p in legal]
-
-        # Display the number of calls of `run_simulation` and the
-        # time elapsed.
-        # print games, datetime.datetime.utcnow() - begin
-
-        # Pick the move with the highest percentage of wins.
-        percent_wins, move = max(
-            (self.wins.get((player, S), 0) /
-             self.plays.get((player, S), 1),
-             p)
-            for p, S in moves_states
-        )
-
-        # Display the stats for each possible play.
-        for x in sorted(
-                ((100 * self.wins.get((player, S), 0) /
-                  self.plays.get((player, S), 1),
-                  self.wins.get((player, S), 0),
-                  self.plays.get((player, S), 0), p)
-                 for p, S in moves_states),
-                reverse=True
-        ):
-            debug("{3}: {0:.2f}% ({1} / {2})".format(*x))
-
-        debug(f"Maximum depth searched: {self.max_depth}")
-
-        return move
-
-    def run_simulation(self):
-        # A bit of an optimization here, so we have a local
-        # variable lookup instead of an attribute access each loop.
-        plays, wins = self.plays, self.wins
-
-        visited_states = set()
-        vboard = deepcopy(self.board)
-        states_copy = vboard.compact_state()
-        player = vboard.current_player()
-
-        expand = True
-        for t in range(1, self.max_moves + 1):
-            legal = vboard.legal_moves()
-            if not legal:
-                break
-            moves_states = [(p, vboard.next_state(p)) for p in legal]
-
-            if all(plays.get((player, S)) for p, S in moves_states):
-                # If we have stats on all of the legal moves here, use them.
-                # d = [plays[(player, S)] for p, S in moves_states]
-                # debug(f'Debug: {d}')
-                # debug(f' moves_states: {moves_states}')
-                log_total = math.log(
-                    sum(plays[(player, S)] for p, S in moves_states))
-                value, move, state = max(
-                    ((wins[(player, S)] / plays[(player, S)]) +
-                     self.C * math.sqrt(log_total / plays[(player, S)]), p, S)
-                    for p, S in moves_states
-                )
-            else:
-                # Otherwise, just make an arbitrary decision.
-                move, state = random.choice(moves_states)
-            vboard.play(move)
-
-            # `player` here and below refers to the player
-            # who moved into that particular state.
-            if expand and (player, state) not in plays:
-                expand = False
-                plays[(player, state)] = 0
-                wins[(player, state)] = 0
-                if t > self.max_depth:
-                    self.max_depth = t
-
-            visited_states.add((player, state))
-
-            winner = vboard.winner()
-            if not winner == -1:
-                break
-
-            player = vboard.current_player()
-
-        for player, state in visited_states:
-            if (player, state) not in plays:
-                continue
-            plays[(player, state)] += 1
-            if player == winner:
-                wins[(player, state)] += 1
-
+gp = GamePlay()
+bp = None
 # game loop
-board = Board(3)
-mcts = MCTS(board)
 while True:
-    opponent_size, opponent_col = [int(i) for i in input().split()]
-    debug(f'opponent_size: {opponent_size } opponent_col:{opponent_col}')
-    board.play((opponent_size, opponent_col)) if not opponent_size == -1 else None
-    valid_action_count = int(input())
-    for i in range(valid_action_count):
-        size, col = [int(j) for j in input().split()]
-        # debug(f'size:{size}, col:{col}')
+    items = [[0 for _ in range(width)] for _ in range(height)]
+    for i in range(height):
+        row = input()
+        debug(f'{row}')
+        for col, val in enumerate(list(row)):
+            if val == '.':
+                grid[i][col] = Cell(-1, None, sys.maxsize, None)
+            elif val == 'x' or val == 'X':
+                grid[i][col] = Cell(-2, None, sys.maxsize, None)
+            else:
+                grid[i][col] = Cell(int(i), None, sys.maxsize, None)
 
-    # Write an action using print
-    # To debug: print("Debug messages...", file=sys.stderr)
-    x, y = move = mcts.get_play()
-    board.play(move)
+    entities = int(input())
+    debug(f'entities: {entities}')
+    for i in range(entities):
+        entity_type, owner, x, y, param_1, param_2 = [int(j) for j in input().split()]
+        debug(f'entity_type:{entity_type}, owner:{owner}, x:{x}, y:{y}, param_1:{param_1}, param_2:{param_2}')
+        if entity_type == 0:  # Player
+            positions[owner] = y, x
+            if owner == my_id:
+                n_bombs = param_1
+                ranges[my_id] = param_2
+        elif entity_type == 1:
+            time = param_1
+            grid[y][x] = Cell(3, owner, param_1, param_2)  # Bomb
+        else:  #items
+            items[y][x] = param_1  # val 1 or 2 
 
-    print(f"{x} {y}")
+    curr_pos = positions[my_id]
+    gp.play(curr_pos)
