@@ -98,9 +98,6 @@ class GameSimulation:
 					dp[i][j].val = 0
 					dp[i][j].min_bombing_duration = min(dp[i][j].min_bombing_duration, grid[i][j].time)
 					for x in range(max(i-1, 0), max(i - (_range), -1), -1):  # up
-						#if grid[x][j].val == -2 or items[x][j] or not dp[x][j].min_bombing_duration == sys.maxsize:
-						#    dp[x][j].min_bombing_duration = min(dp[x][j].min_bombing_duration, grid[i][j].time)
-						#    break
 						if grid[x][j].val == -1:
 							dp[x][j].val = 0
 							dp[x][j].min_bombing_duration = min(dp[x][j].min_bombing_duration, dp[i][j].min_bombing_duration)
@@ -117,9 +114,6 @@ class GameSimulation:
 							dp[x][j].min_bombing_duration = min(dp[x][j].min_bombing_duration, dp[i][j].min_bombing_duration)
 							break
 					for y in range(max(j-1, 0), max(j - (_range), -1), -1):  # left
-						#if grid[i][y].val == -2 or items[i][y] or not dp[i][y].min_bombing_duration == sys.maxsize:
-						#    dp[i][y].min_bombing_duration = min(dp[i][y].min_bombing_duration, grid[i][j].time)
-						#    break
 						if grid[i][y].val == -1:
 							dp[i][y].val = 0
 							dp[i][y].min_bombing_duration = min(dp[i][y].min_bombing_duration, dp[i][j].min_bombing_duration)
