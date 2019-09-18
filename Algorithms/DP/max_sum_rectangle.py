@@ -9,11 +9,11 @@ def kadane(arr):
     for i in range(len(arr)):
         sum_unto += arr[i]
         if arr[i] > sum_unto:
-            sum_unto = arr[i];
+            sum_unto = arr[i]
             head = i
         if sum_unto > max_global:
-            max_global = sum_unto;
-            start = head;
+            max_global = sum_unto
+            start = head
             end = i
     return max_global, start, end
 
@@ -31,7 +31,7 @@ def max_rect(arr):
             local_max, _start, _end = kadane(temp)
             if local_max > global_max:
                 global_max = local_max
-                start = _start;
+                start = _start
                 end = _end
     return global_max, start, end
 

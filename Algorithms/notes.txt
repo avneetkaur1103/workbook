@@ -38,3 +38,11 @@ There are following three cases:
 1. If f(n) = Θ(n^c) where c < Log(b)a then T(n) = Θ(n^Log(b)a) | work at leaves are more | total work = no of leaves = n^Log(b)a
 2. If f(n) = Θ(n^c) where c = Log(b)a then T(n) = Θ(n^c*Log n) | #leaves = n (input size)| total work = work at leaves = height*work at each level
 3.If f(n) = Θ(n^c) where c > Log(b)a then T(n) = Θ(f(n)) | work at root exceeds | total work = work at root > no of leaves = f(n)
+
+Backtracking
+Problems which are typically solved using backtracking technique have following property in common. These problems can only be solved by trying every possible configuration and each configuration is tried only once.Backtracking works in incremental way and is an optimization over the Naive solution where all possible configurations are generated and tried.
+
+Hamiltonian Path in an undirected graph is a path that visits each vertex exactly *(once)
+
+TODO:
+What does it take to make all permutation computation iterartive. How is different from tree recursions.

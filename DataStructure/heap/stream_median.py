@@ -30,7 +30,7 @@ def median(arr):
 				temp = min_heap[0]
 				heapq.heapreplace(min_heap, i)
 				max_heap.append(temp)
-				heapq._siftdown_max(max_heap, 0, max_l-1)
+				heapq._siftdown_max(max_heap, 0, max_l)
 			else:
 				max_heap.append(i)
 				heapq._siftdown_max(max_heap, 0, max_l)

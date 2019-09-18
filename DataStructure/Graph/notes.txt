@@ -1,0 +1,42 @@
+Disjoint set union for detecting cycle:
+Unioning node for each edges - if it's alreday in the same set it's cyclic
+
+Topological sorting for Directed Acyclic Graph (DAG) is a linear ordering of vertices such that for every directed edge uv, vertex u comes before v in the ordering. Topological Sorting for a graph is not possible if the graph is not a DAG.
+
+Make the higher rank-node as parent to minimize the disjoint set tree depths. Rank => max-depth
+Path compression would be making all child of a node point to parent chosen above in union-by-rank.(optional)
+
+In fact, the Longest Path problem is NP-Hard for a general graph
+
+Bellman-Ford:
+ike other Dynamic Programming Problems, the algorithm calculate shortest paths in bottom-up manner. It first calculates the shortest distances which have at-most one edge in the path. Then, it calculates shortest paths with at-most 2 edges, and so on. After the i-th iteration of outer loop, the shortest paths with at most i edges are calculated. There can be maximum |V| – 1 edges in any simple path, that is why the outer loop runs |v| – 1 times.
+
+Floyd-warshall will not work for -ve cycle, for node as a part of -ve will have -inf cost. we may exclude these node for rest of graph to work
+fine with the algo.
+
+Articulation point
+A vertex in an undirected connected graph is an articulation point (or cut vertex) iff removing it (and edges through it) disconnects the graph.
+For a disconnected undirected graph, an articulation point is a vertex removing which increases number of connected components.
+
+Bridges:
+An edge in an undirected connected graph is a bridge iff removing it disconnects the graph. For a disconnected undirected graph, definition is similar, a bridge is an edge removing which increases number of disconnected components.
+condition for an edge (u, v) to be a bridge is, “low[v] > disc[u]”.
+
+Euler Path:
+Eulerian Path is a path in graph that visits every edge exactly once. Eulerian Circuit is an Eulerian Path which starts and ends on the same vertex. - Sanket & Girlfriend problem can be eulerian path problem(?)
+
+[IMP]The meaning of Articulation point and bridges are well suited for underted graph naturally, for directed graph connectivity itself has a very different meaning than underted graph.
+
+
+Travelling salesperson problem:
+For graph following triangle-inequality MST produces 2-approximate solution means path produced by mst is at most 2*opt-path.
+
+Greedy-Approximate for graph coloring - guarantees an upper bound on the number of colors. The basic algorithm never uses more than d+1 colors where d is the maximum degree of a vertex in the given graph.
+
+Ford-Fulkerson:
+Ford-Fulkerson Algorithm 
+The following is simple idea of Ford-Fulkerson algorithm:
+	1) Start with initial flow as 0.
+	2) While there is a augmenting path from source to sink. 
+	   Add this path-flow to flow.
+	3) Return flow.

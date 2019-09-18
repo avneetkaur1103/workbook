@@ -36,6 +36,7 @@ class Queen:
         self.archer_creeps = list()
         self.giant_creeps = list()
         self.mines = list()
+        self.total_gold_rate = 0
 
     def __repr__(self):
         return f'id: {self.id} pos:{self.pos} health: {self.health}'
@@ -53,7 +54,7 @@ class Site:
         self.snooze_timer = 100  # Big Num
         self.health = None
         self.attack_radius = None
-        self.remaining_gold = None
+        self.remaining_gold = -1
         self.max_mine_rate = None
         self.mine_rate = None
 
@@ -69,9 +70,9 @@ class Site:
             self.health = param_1
             self.attack_radius = param_2
         if self.if_mine:
-            self.remaining_gold = gold
-            self.max_mine_rate = max_mine_rate
             self.mine_rate = param_1
+        self.remaining_gold = gold
+        self.max_mine_rate = max_mine_rate
 
 
     def __repr__(self):
@@ -142,6 +143,23 @@ class Game:
         result = list(filter(lambda e: min_x < e.pos.x < max_x and min_y < e.pos.y < max_y, self.queens[ENEMY].knight_creeps))
         return result
 
+    def in_radius_of_tower(self):
+        hero = self.hero
+        result = list()
+        for site in self.hero.towers:
+            pos, r = site.pos, site.attack_radius
+            min_x, max_x = max(pos.x-r, 0), min(pos.x+r, 1920)
+            min_y, max_y = max(pos.x-r, 0), min(pos.x+r, 1920)
+            if min_x < hero.pos.x < max_x and min_y < hero.pos.y < max_y:
+                result.append(site)
+        return result
+
+    @staticmethod
+    def in_home_boundary(site):
+        d = abs(site.pos.x - HOME.x)
+        # debug(f'dist from home: {d} {d < 1920/2}')
+        return  d < 1000
+
     def calculate_risk(self):
         result = self.min_distance_site(self.queens[ENEMY].knight_creeps, self.hero.pos)
         debug(f'All enemy creeps: {self.queens[ENEMY].knight_creeps}')
@@ -157,69 +175,91 @@ class Game:
             return CODE_GREEN
 
     def play_phase1(self):
-        free_sites = sorted([site for site in self.sites if not site.if_barrack and not site.if_tower and not site.if_mine], key=lambda site:self.dist(self.hero.pos, site.pos))
-        enemy_circle = [(max(site.pos.x-site.attack_radius, 0), min(site.pos.x+site.attack_radius, 1920), max(site.pos.y-site.attack_radius, 0), min(site.pos.y+site.attack_radius, 1000)) for site in self.queens[ENEMY].giant_site]
+        free_sites = sorted([site for site in self.sites if not site.if_barrack and not site.if_tower and not site.if_mine and self.in_home_boundary(site)], key=lambda site:self.dist(self.hero.pos, site.pos))
+        # enemy_circle = [(max(site.pos.x-site.attack_radius, 0), min(site.pos.x+site.attack_radius, 1920), max(site.pos.y-site.attack_radius, 0), min(site.pos.y+site.attack_radius, 1000)) for site in self.queens[ENEMY].giant_site]
         code = self.calculate_risk()
         debug(f'Code: {code}')
-        if code == CODE_RED:
-            # Move away to the safety towards nearest arch/giant site or home
-            pos = None
-            if gold < 100: # Save 
-                pos = HOME
-            if not pos and len(self.hero.towers):
-                site = self.min_distance_site(self.hero.towers, self.hero.pos)
-                pos = site.pos if site else None
-            if not pos and len(self.hero.archer_site):
-                site = self.min_distance_site(self.hero.archer_site, self.hero.pos)
-                pos = site.pos if site else None
-            if not pos and len(self.hero.giant_site):
-                site = self.min_distance_site(self.hero.giant_site, self.hero.pos)
-                pos = site.pos if site else None
-            if not pos:
-                pos = HOME
-            debug(f'MOVE {pos.x}, {pos.y}')
-            print(f'MOVE {pos.x} {pos.y}')
-            return
-        '''if code == CODE_YELLOW:
-            # Build Arch / Giant
-            print('WAIT')
-            return'''
         if code == CODE_GREEN or code == CODE_YELLOW:
-            # Build more Knight / Giant
             if free_sites:
                 if not self.hero.knight_site:
                     site = free_sites.pop(0)
                     print(f'BUILD {site.id} BARRACKS-KNIGHT')
                     return
-                if not self.hero.towers:
-                    site = free_sites.pop(0)
-                    print(f'BUILD {site.id} TOWER')
+                if len(self.hero.mines) < 3:
+                    free_sites_around_home = sorted([site for site in self.sites if not site.if_barrack and not site.if_mine and not site.remaining_gold == 0], key=lambda site:self.dist(HOME, site.pos))
+                    if free_sites_around_home:
+                        site = free_sites_around_home.pop(0)
+                    print(f'BUILD {site.id} MINE')
                     return
-                if not self.hero.archer_site:
-                    site = free_sites.pop(0)
-                    print(f'BUILD {site.id} BARRACKS-ARCHER')
-                    return
-                if not self.hero.giant_site :
-                    site = free_sites.pop(0)
-                    print(f'BUILD {site.id} BARRACKS-GIANT')
-                    return
-            if free_sites:
-                site = self.min_distance_site(free_sites, self.hero.pos)
-                pos = site.pos if site else None
+
+                if self.hero.towers:
+                    all_towers = sorted([site for site in self.hero.towers if site.health < 400], key=lambda e: (e.health, e.pos))
+                    if all_towers:
+                        site = all_towers.pop(0)
+                        print(f'BUILD {site.id} TOWER')
+                        return
+
                 if len(self.hero.towers) < 4:
+                    site = free_sites.pop(0)
                     print(f'BUILD {site.id} TOWER')
                     return
-                elif len(self.hero.knight_site) < 2:
-                    print(f'BUILD {site.id} BARRACKS-KNIGHT')
-                    return
-                elif len(self.hero.giant_site) < 2:
+
+                if not self.hero.giant_site and len(self.queens[ENEMY].towers) + len(self.queens[ENEMY].mines) >= 4:
+                    site = free_sites.pop(0)
                     print(f'BUILD {site.id} BARRACKS-GIANT')
                     return
-            if self.queens[ENEMY].archer_site:
-                site = self.min_distance_site(self.queens[ENEMY].archer_site, self.hero.pos)
-                pos = site.pos
-                print(f'MOVE {pos.x} {pos.y}')
-                return
+
+                if self.hero.total_gold_rate < 10:
+                    site = None
+                    upgradable_mines = [mine for mine in self.hero.mines if mine.mine_rate < mine.max_mine_rate]
+                    if upgradable_mines:
+                        site = upgradable_mines.pop(0)
+                    else:
+                        free_sites_around_home = sorted([site for site in self.sites if not site.if_barrack and not site.if_tower and not site.if_mine and not site.remaining_gold == 0], key=lambda site:self.dist(HOME, site.pos))
+                        if free_sites_around_home:
+                            site = free_sites_around_home.pop(0)
+                    print(f'BUILD {site.id} MINE')
+                    return
+                # free_sites_around_mines = sorted([site for site in self.sites if not site.if_barrack and not site.if_tower and not site.if_mine], key=lambda site:self.dist(self.HOME, site.pos))
+                if len(self.hero.towers) < 5:
+                        site = free_sites.pop(0)
+                        print(f'BUILD {site.id} TOWER')
+                        return
+
+            if self.hero.towers:
+                    all_towers = sorted([site for site in self.hero.towers if site.health < 600], key=lambda e: (e.health, e.pos))
+                    if all_towers:
+                        site = all_towers.pop(0)
+                        print(f'BUILD {site.id} TOWER')
+                        return
+
+        if code == CODE_RED:
+            # Move away to the safety towards nearest arch/giant site or home
+            pos = None
+            for site in self.hero.towers:  # grow towers
+                all_towers = self.in_radius_of_tower()
+                site = self.min_distance_site(all_towers, self.hero.pos)
+                if site:
+                    print(f'BUILD {site.id} TOWER')
+                    return
+            if not pos and len(self.hero.towers):
+                site = self.min_distance_site(self.hero.towers, self.hero.pos)
+                if free_sites and self.dist(free_sites[0].pos, self.hero.pos) < self.dist(site.pos, self.hero.pos):
+                    site = free_sites.pop(0)
+                    if site and self.dist(site.pos, self.hero.pos) < self.dist(HOME, self.hero.pos):
+                        print(f'BUILD {site.id} TOWER')
+                        return
+                pos = site.pos if site else None
+            if not pos:
+                if free_sites:
+                    site = free_sites.pop(0)
+                    if site and self.dist(site.pos, self.hero.pos) < self.dist(HOME, self.hero.pos):
+                        print(f'BUILD {site.id} TOWER')
+                        return
+                    pos = HOME
+            debug(f'MOVE {pos.x}, {pos.y}')
+            print(f'MOVE {pos.x} {pos.y}')
+            return
         print('WAIT')
 
     def play_phase2(self):
@@ -230,10 +270,10 @@ class Game:
                     debug(f'TRAIN ARCHER: {self.in_radius_of_archer(archer_site.pos, 1000)}')
                     print(f'TRAIN {archer_site.id}')
                     return
-        if self.hero.knight_site and len(self.hero.knight_creeps) < 6 and self.hero.knight_site[0].snooze_timer == 0 and gold - 50 > cost[KNIGHT]:
+        if self.hero.knight_site and len(self.hero.knight_creeps) < 6 and self.hero.knight_site[0].snooze_timer == 0 and gold > cost[KNIGHT]:
             print(f'TRAIN {self.hero.knight_site[0].id}')
             return
-        if self.hero.giant_site and len(self.hero.giant_creeps) < 2 and self.hero.giant_site[0].snooze_timer == 0 and gold > cost[GIANT]:
+        if self.hero.giant_site and len(self.hero.giant_creeps) < 1 and len(self.queens[ENEMY].towers) > 4 and self.hero.giant_site[0].snooze_timer == 0 and gold > cost[GIANT]:
             print(f'TRAIN {self.hero.giant_site[0].id}')
             return
         print('TRAIN')
@@ -251,6 +291,7 @@ class Game:
             self.queens[creep.owner].archer_creeps.append(creep) if creep.type == ARCHER else None
             self.queens[creep.owner].giant_creeps.append(creep) if creep.type == GIANT else None
 
+        self.queens[FRIENDLY].total_gold_rate = sum(mine.mine_rate for mine in self.hero.mines) if self.hero.mines else 0
         # Phase 1 wait / build / move
         self.play_phase1()
         # Phase 2 Train commands
@@ -276,7 +317,7 @@ while True:
         # owner: -1 = No structure, 0 = Friendly, 1 = Enemy
         site_id, ignore_1, ignore_2, structure_type, owner, param_1, param_2 = [int(j) for j in input().split()]
         game.sites[site_id].update(ignore_1, ignore_2, structure_type, owner, param_1, param_2)
-        # debug(f'site_id: {site_id} ignore_1:{ignore_1} ignore_2: {ignore_2} structure_type: {owner} param_1: {param_1} param_2: {param_2}')
+        # debug(f'site_id: {site_id} ignore_1:{ignore_1} ignore_2: {ignore_2} owner: {owner} structure_type:{structure_type} param_1: {param_1} param_2: {param_2}')
     num_units = int(input())
     for i in range(num_units):
         # unit_type: -1 = QUEEN, 0 = KNIGHT, 1 = ARCHER
