@@ -25,7 +25,7 @@ def minimax(depth, maximizingPlayer, player1, player2, alpha, beta):
         for key, pos in temp:
             next_pos = player1.pos[0] + pos[0], player1.pos[1] + pos[1]
             if board.is_free(next_pos[0], next_pos[1]):
-                player1._move(next_pos[0], next_pos[1])
+                player1._move(next_pos[0], next_pos[1], key)
                 val = minimax(depth - 1, False, player1, player2, alpha, beta)
                 debug(f'{depth}: {key} score => {val[0]}')
                 if val[0] > best:
@@ -48,7 +48,7 @@ def minimax(depth, maximizingPlayer, player1, player2, alpha, beta):
         for key, pos in temp:
             next_pos = player2.pos[0] + pos[0], player2.pos[1] + pos[1]
             if board.is_free(next_pos[0], next_pos[1]):
-                player2._move(next_pos[0], next_pos[1])
+                player2._move(next_pos[0], next_pos[1],key)
                 val = minimax(depth - 1, True, player1, player2, alpha, beta)  
                 if val[0] < best:
                     best = val[0]
@@ -68,17 +68,7 @@ class Player:
         self.id = id
         self.pos = None
         self.last_pos = list()
-
-    """
-        def move(self):
-            temp = list(moves.items()); random.shuffle(temp)
-            for key, pos in temp:
-                next_pos = self.pos[0] + pos[0], self.pos[1] + pos[1]
-                if board.is_free(next_pos[0], next_pos[1]):
-                    self.update(next_pos[0], next_pos[1])
-                    print(key)
-                    break
-            self.pos = next_pos """
+        self.last_move_key = None
 
     def move(self):
         rivals = [player for player in players if not player.id == self.id]
@@ -97,20 +87,16 @@ class Player:
                 debug('Breaking out')
                 break
 
-        pos = moves[best_move]
+        pos = moves[best_move] if best_move else moves[self.last_move_key]
         next_pos = self.pos[0] + pos[0], self.pos[1] + pos[1]
-        self._move(next_pos[0], next_pos[1])
+        self._move(next_pos[0], next_pos[1], best_move)
         print(best_move)
-        '''
-        start_time = time()
-        current_time = time()
-        for(int distance = 1; distance < MAX_DISTANCE && current_time - start_time > MAX_TIME; distance++)
-            bestmove = alphaBetaAtRoot(position, distance);'''
 
-    def _move(self, x, y):
+    def _move(self, x, y, best_move):
         self.last_pos.append(self.pos)
         self.pos = x, y
         board.fill_cell(self.id, x, y)
+        self.last_move_key = best_move
 
     def _undo_move(self):
         board.clear_cell(self.pos[0], self.pos[1])
@@ -178,7 +164,7 @@ while True:
         # y1: starting Y coordinate of lightcycle (can be the same as Y0 if you play before this player)
         x0, y0, x1, y1 = [int(j) for j in input().split()]
         debug(f'{i}: Initial {x0} {y0} | Final {x1} {y1}')
-        players[i]._move(x1,y1)    
+        players[i]._move(x1,y1, None)    
     # A single line with UP, DOWN, LEFT or RIGHT
     # board.print()
     players[p].move()

@@ -26,7 +26,7 @@ def insert(root, key):
 
 def remove_outlier(root, min, max):
 	if root:
-		root.left = remove_outlier(root.left, min, max)
+		root.left = remove_outlier(root.left, min, max)  # post order handles all required deletion in order
 		root.right = remove_outlier(root.right, min, max)
 
 		if root.key < min:

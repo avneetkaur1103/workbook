@@ -22,7 +22,7 @@ def is_bisecting_tree_util(root, n):
 	is_left_bisecting, left_size  = is_bisecting_tree_util(root.left,n)
 	is_right_bisecting, right_size  = is_bisecting_tree_util(root.left,n)
 
-	if n/2 == 1+left_size + right_size or (is_left_bisecting or is_right_bisecting):
+	if n/2 == 1+left_size + right_size or (is_left_bisecting or is_right_bisecting):  # same as looking for duplicate subtree
 		return True, 1+left_size + right_size
 	return False, 1+left_size + right_size
 
