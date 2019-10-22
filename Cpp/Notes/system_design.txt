@@ -1,0 +1,32 @@
+Round-robin @ DNS => store multiple IPs for a name & return a next ip in the circular link each time queried. By the nature of it can overload some of the server  sending all heavy queries to it.
+Also, A lot of time OS/Browser would cache ip from name lookup from DNS server, a user request would be sent to same machine(as same IP) util the TTL for DNS lookup expires. =>
+
+Instead we can choose LB level rounds robin => Single IP for load balancer no DNS caching issue.
+Although with above round robin we end up skipping session & cookie handling problems which is valid per server machine. we now have to keep separate line of storage server(or at LB itself in case of single LB which would be consistent) to keep these session info - maybe a Network file system or DB like MySql. => Replication
+
+Sticky sessions/Affinity - LB can insert some big random no in cookie, when user sends subsequent request, LB look for what back-end does that random no maps to & transfer request there.(LB here has the ability to work @HTTP level) => The system breaks down if cookies are disabled
+
+CraingsList caches dynamically generated .html pages as caches => gives a good performance benefit as spitting out static content is pretty fast, but also compromises on the fact if there are any changes is html template all those files needs to be regenerated & uses a lot more storage as it doesn't take advantage of having a common template for all .html files.
+
+Data querying slow -to-fast:
+Store data in the file(say xml) -> load from disk(v.slow)->build DOM -> search
+store data in DB -> search over indexes if not in RAM already(faster)
+Store data(key-value pair) in memory(RAM) -> search  => (typical memcache) => facebook uses this for feed lookup => in-memory cache
+
+Different MySql DB engines
+Archive specific DB engine would keep data stored as compressed => makes it slower to query though.
+NDB database engine uses network based master-slave cluster for data storage to avoid spof. => adds to read heavy system as slaves can be used for reads => master-master would still be better=>requires consistency resolution.
+
+Active- active load balancer synonyms master-master system.
+High-Availability - more than one instances of components(server, LB, DBs) in topology exchanging their heartbeat so if some dies other takes care of it's responsibility. => Active - Active / Active - Passive LB
+Although like LBs, DBs won't have access to Http messages so we can't partition here based on text range or so.
+
+Geography based load balancing is still DNS level as it needs to be sticky => No round robin in here => Then how do we deal with down time? => wait for TTL to expire?
+
+Traffic from Internet
+We can drop off added security like SSL once past LB into private server networks. All SSL certifications & cryptography are handles at LB now.
+
+RAID: Redundant Array of Independent Disk:
+RAID0 - Slice of data written over multiple disk(Faster)
+RAID1 - Replication Disk 1:1(fault tolerant storage)
+

@@ -32,8 +32,3 @@ if __name__ == "__main__":
   
 	arr = [7, 4, 12, 3, 6, 8, 1, 5, 10]
 	print('Is levelorder of bst: ', level_order_of_bst(arr))
-
-
-
-
-

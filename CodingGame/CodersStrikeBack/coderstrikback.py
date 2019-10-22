@@ -23,14 +23,14 @@ def next_pos(x, y, vx, vy, ncx, ncy, ncp_angle, thrust):
 			if t:
 				z = -z if t < 0 else z
 				dparallel = speed*math.sin(ncp_angle)*t + 0.5*thrust*math.cos(z/180*math.pi)*t*t
-				dperpendicular= speed*math.sin(ncp_angle)*t + 0.5*thrust*math.sin(z/180*math.pi)*t*t
-				#debug(f'z: {z}, diff:{dist(x,y, next_x, next_y)}, target:{distance}, time:{t}')
+				dperpendicular = speed*math.sin(ncp_angle)*t + 0.5*thrust*math.sin(z/180*math.pi)*t*t
+				# debug(f'z: {z}, diff:{dist(x,y, next_x, next_y)}, target:{distance}, time:{t}')
 			else:
 				return 0  # angle 0
 		except ZeroDivisionError:
 			continue
 		if max_d_parallel < dparallel :
-			#debug(f'diff: {diff}, min_d:{min_d}')
+			# debug(f'diff: {diff}, min_d:{min_d}')
 			angle = z
 			max_d_parallel, min_d_perpendicular = dparallel, dperpendicular
 	debug(f'angle: {angle}, max_d_parallel:{max_d_parallel} min_d_perpendicular:{min_d_perpendicular}')
@@ -63,8 +63,8 @@ while True:
 			d = dist(x, y, next_checkpoint_x, next_checkpoint_y)
 			projected_x = int((next_checkpoint_x-x)*math.cos(angle) - (next_checkpoint_y-y)*math.sin(angle) + x)
 			projected_y = int((next_checkpoint_y-y)*math.cos(angle) + (next_checkpoint_x-x)*math.sin(angle) + y)
-			#projected_x = int(d*math.cos(angle))
-			#projected_y = int(d*math.sin(angle))
+			# projected_x = int(d*math.cos(angle))
+			# projected_y = int(d*math.sin(angle))
 	last_x, last_y = x, y
 	
 	if dist(x, y, next_checkpoint_x, next_checkpoint_y) > 8000 and not BOOST_USED and abs(ncp_angle) <= 20:

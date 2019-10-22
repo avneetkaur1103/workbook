@@ -10,7 +10,7 @@ def distance(str1, str2):
 				dp[i][j] = i
 			elif i == 0:
 				dp[i][j] = j
-			elif str1[i-1] == str2[j-1]:
+			elif str1[i-1] == str2[j-1]: #optimal decision making
 				dp[i][j] = dp[i-1][j-1]
 			else:
 				dp[i][j] = 1 + min(dp[i-1][j],  # deleted in str1

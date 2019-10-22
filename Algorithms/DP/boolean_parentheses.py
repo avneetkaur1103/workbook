@@ -26,13 +26,13 @@ def parenthesization(symbols, operators):
                 for k in range(i, j):
                     tik = T[i][k] + F[i][k]
                     tkj = T[k + 1][j] + F[k + 1][j]
-                    if operators[i] == '&':
+                    if operators[k] == '&':
                         T[i][j] += T[i][k] * T[k + 1][j]
-                        F[i][j] += (tik * tik - T[i][k] * T[k + 1][j])
-                    elif operators[i] == '|':
+                        F[i][j] += (tik * tkj - T[i][k] * T[k + 1][j])
+                    elif operators[k] == '|':
                         F[i][j] += F[i][k] * F[k + 1][j]
                         T[i][j] += (tik * tkj - F[i][k] * F[k + 1][j])
-                    elif operators[i] == '^':
+                    elif operators[k] == '^':
                         T[i][j] += T[i][k] * F[k + 1][j] + T[k + 1][j] * F[i][k]
                         F[i][j] += T[i][k] * T[k + 1][j] + F[k + 1][j] * F[i][k]
     return T, F

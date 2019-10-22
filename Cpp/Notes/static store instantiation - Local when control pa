@@ -1,0 +1,153 @@
+static store instantiation - Local when control passes for the 1st time.
+Global & class member - before main()
+
+Can't overload below opr:
+. / :: /.*
+They take name rather than value as their 2nd operand and provide primary means to refering members.
+
+overload operator functions -> Non-static as member function / Non-member function
+=/[]/()/-> must be a non-static member => ensures first operand to be a l-value
+
+Postfix non member takes refrence to self as 1st arg - 
+x operator++(x&, int) -> because needs to modify member
+X* operator&() -> prefix addressof oprator
+X oprator&(X) -> binary bitwise &
+
+# ------------ #----------- # ----------------
+For a binary operator @, x @y where x is of type X and y is of type Y is resolved like this:
+[1] If X is a class, determine whether class X or a base of X defines o p e r a t o r @ as a member; if
+so, that is the @ to try to use.
+[2] Otherwise,
+– look for declarations of @ in the context surrounding x @y ; and
+– if X is defined in namespace N , look for declarations of @ in N ; and
+– if Y is defined in namespace M , look for declarations of @ in M .
+If declarations of o p e r a t o r @ are found in the surrounding context, in N
+# ------------ #----------- # ----------------
+
+No implicit conversion is applied to left of ./->
+
+Only one level of implicit conversion is legal.
+User defined conversions:
+The i s t r e a m and o s t r e a m types rely on a conversion function to enable statements such as:
+while (cin >>x ) cout<<x ;
+
+It follows that a friend function should either be explicitly declared in an enclosing scope or take an argument of its class. If not, the friend cannot be called.
+
+void g(); // X’s friend
+class X {
+friend void f(); // useless
+friend void g();
+friend void h(const X &); // can be found through its argument
+};
+void f() { /* ... */ } // not a friend of X
+Consequently, binary operators are the
+most common source of friend functions.
+
+The second argument (the subscript) of an operator [] function may be of any type. => String as key in associative containers.
+
+The dereferencing operator -> can be defined as a unary postfix operator. => X* operator->(); => return pointer to held object. Operator -> must be a member function. If used, its return type must be a pointer or an object of a class to which you can apply ->.
+
+void f(Ptr p )
+{
+	p->m = 7 ; //(p.operator– ())–>m = 7 [IMP]
+}
+
+In general,
+if a class Derived has a public base class (§15.3) Base, then a Derived * can be assigned to a variable of type Base* without the use of explicit type conversion. The opposite conversion, from Base* to Derived*, must be explicit.
+
+Default constructors can be invoked implicitly. However, if all constructors for a base
+require arguments, then a constructor for that base must be explicitly called.
+
+Class objects are constructed from the bottom up: first the base, then the members, and then the derived class itself. They are destroyed in the opposite order: first
+
+# ------------ #----------- # ----------------
+void f (const Manager & m )
+{
+	Employee e = m ; // construct e from Employee part of m
+	e = m ; // assign Employee part of m to e
+}
+
+Because the Employee copy functions do not know anything about Managers, only the Employee
+part of a Manager is copied. This is commonly referred to as slicing and can be a source of surprises and errors. One reason to pass pointers and references to objects of classes in a hierarchy is to avoid slicing. Other reasons are to preserve polymorphic behavior and to gain
+efficiency.
+# ------------ #----------- # ----------------
+The keyword virtual indicates that a function can act as an interface to the function defined in this class and the functions defined in classes derived from it.
+
+Templates
+---------
+Templates provide direct support for generic programming that is, programming using types as parameters. The C++ template mechanism allows a type to be a parameter in the definition
+of a class or a function.
+
+The template class C prefix specifies that a template is being declared and that a type argument C will be used in the declaration.
+
+typedef basic_string<char> string => typedef allows us to hide the fact that a type is generated from a template.
+
+Members of a template class are themselves templates parameterized by the parameters of their template class.
+template<class C> 
+String<C>::String() => member constructor
+
+A version of a template for a particular template argument
+is called a specialization.
+
+A template can take type parameters, parameters of ordinary types such as ints, and template parameters.It should be compile time deducible like - constant expression/val, the address of an object or function with external linkage(static function), or a non-overloaded pointer to member(same generated class).
+
+When a template function is called, the types of the function arguments determine which version of the template is used => When a template function is called, the types of the function arguments determine which version of the template is used.
+If a template argument cannot be deduced from the template function arguments (§C.13.4), we must specify it explicitly:
+
+template<class T, class U> T implicit_cast(U u){return u;}
+implicit_cast(i) 			//error: can’t deduce T
+implicit_cast<double>(i) 	//T is double U in int
+
+One can declare several function templates with the same name and even declare a combination of function templates and ordinary functions with the same name. => If two template functions can be called and one is more specialized than the other consider only the most specialized template function in the following steps.
+
+If a function and a specialization are equally good matches, the function is preferred. Consequently, sqrt(double) is preferred over sqrt<double>(double) for sqr(2.0) .
+
+If a template function argument has been determined by template argument deduction that argument cannot also have promotions, standard conversions, or user-defined conversions applied. see below.
+template<typename T> T max(T, T);
+max(2.7, 4) //ambiguous
+max<double>(2.7,4) => //max<double>(2.7, double(4)) works
+
+Template agrument to specify predicate => to use static member func/non-member function(templatized or not)
+
+template<class T, class C=Cmp<T>> => class C=Cmp<T> is the default template param to specify policy of comparison which has 2 static func Cmp<T>::eq & Cmp<T>::lt
+
+Template Specialization:
+alternative definitions of the template and having the compiler choose between them based on the template arguments provided called user-defined specializations.
+
+template<> class Vector<void*>{ => complete specialization no agument deduction called for vector<void*> vpv
+	void p
+	//...
+	void* operator[] (int i);
+}
+
+template<class T> class Vector<T*>:: private Vector<void*>{ => partial initialization called for any pointer type like vectoy<Shape*> / vector<int**>
+	public:
+	typedef Vector<void*> Base
+	Vector(): Base(){}
+	explicit Vector(int i): Base(i){}
+	T*& elem(int i){ return static_cast<T*&> Base::elem(i);}
+	T*& operator(int i) {return static_cast<T*&>(Base::operator[](i))};
+	//...
+}
+
+The general template must be declared before any specialization.The critical information supplied by the general template is the set of template parameters that the user must supply to use it or any of its specializations.
+
+template<class T> class List{ //...}
+List<int> li
+template<class T> class List <T*> {//...} //error specialization declared after use. :(
+
+All specializations of a template must be declared in the same namespace as the template itself
+
+Function template specialization:
+template<class T> bool less(T a, T b){return a < b; }
+							| t specialized for char*
+template<> bool less(const char* a, const char* b){return a < b; } or,
+
+template<> bool less<const char*>(const char* a, const char* b){return a < b; }
+
+virtual functions provide is called run-time polymorphism, and what templates offer is called compile-time polymorphism or parametric polymorphism.If no hierarchical relationship
+is required between these objects, they are best used as template arguments. If the actual types of these objects cannot be known at compile-time, they are best represented as classes derived from a common abstract class.
+
+Comparator for c++ sort:
+true for less & eq => No change
+false for greater => swap

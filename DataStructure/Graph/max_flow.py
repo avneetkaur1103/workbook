@@ -10,11 +10,11 @@ def bfs(graph, src, sink, parent):
 
 	while q.qsize():
 		u = q.get()
+		visited[u] = True
 		if u == sink:
 			return True
 		for v, val in enumerate(graph[u]):
 			if not visited[v] and val > 0:
-				visited[v] = True
 				parent[v] = u
 				q.put(v)
 	return False
