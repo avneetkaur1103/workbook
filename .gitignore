@@ -4,3 +4,9 @@
 *.pyc
 # ignore venv
 venv/
+# ignore .o .exe .cbp .depend .layout
+*.o
+*.exe
+*.cbp
+*.depend
+*.layout

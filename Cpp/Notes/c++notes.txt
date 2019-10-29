@@ -5,7 +5,7 @@ Can't overload below opr:
 . / :: /.*
 They take name rather than value as their 2nd operand and provide primary means to refering members.
 
-overload operator functions -> Non-static as member function / Non-member function
+overload operator functions -> Can be - Non-static as member function / Non-member function
 =/[]/()/-> must be a non-static member => ensures first operand to be a l-value
 
 Postfix non member takes refrence to self as 1st arg - 
@@ -40,8 +40,7 @@ friend void g();
 friend void h(const X &); // can be found through its argument
 };
 void f() { /* ... */ } // not a friend of X
-Consequently, binary operators are the
-most common source of friend functions.
+Consequently, binary operators are the most common source of friend functions.
 
 The second argument (the subscript) of an operator [] function may be of any type. => String as key in associative containers.
 
@@ -49,16 +48,15 @@ The dereferencing operator -> can be defined as a unary postfix operator. => X* 
 
 void f(Ptr p )
 {
-	p->m = 7 ; //(p.operator– ())–>m = 7 [IMP]
+	p->m = 7 ; //(p.operator–>())–>m = 7 [IMP]
 }
 
 In general,
-if a class Derived has a public base class (§15.3) Base, then a Derived * can be assigned to a variable of type Base* without the use of explicit type conversion. The opposite conversion, from Base* to Derived*, must be explicit.
+if a class Derived has a public base class Base, then a Derived * can be assigned to a variable of type Base* without the use of explicit type conversion. The opposite conversion, from Base* to Derived*, must be explicit.
 
-Default constructors can be invoked implicitly. However, if all constructors for a base
-require arguments, then a constructor for that base must be explicitly called.
+Default constructors can be invoked implicitly. However, if all constructors for a base require arguments, then a constructor for that base must be explicitly called.
 
-Class objects are constructed from the bottom up: first the base, then the members, and then the derived class itself. They are destroyed in the opposite order: first
+Class objects are constructed from the bottom up: first the base, then the members, and then the derived class itself. They are destroyed in the opposite order
 
 # ------------ #----------- # ----------------
 void f (const Manager & m )
@@ -68,15 +66,13 @@ void f (const Manager & m )
 }
 
 Because the Employee copy functions do not know anything about Managers, only the Employee
-part of a Manager is copied. This is commonly referred to as slicing and can be a source of surprises and errors. One reason to pass pointers and references to objects of classes in a hierarchy is to avoid slicing. Other reasons are to preserve polymorphic behavior and to gain
-efficiency.
+part of a Manager is copied. This is commonly referred to as slicing and can be a source of surprises and errors. One reason to pass pointers and references to objects of classes in a hierarchy is to avoid slicing. Other reasons are to preserve polymorphic behavior and to gain efficiency.
 # ------------ #----------- # ----------------
 The keyword virtual indicates that a function can act as an interface to the function defined in this class and the functions defined in classes derived from it.
 
 Templates
 ---------
-Templates provide direct support for generic programming that is, programming using types as parameters. The C++ template mechanism allows a type to be a parameter in the definition
-of a class or a function.
+Templates provide direct support for generic programming that is, programming using types as parameters. The C++ template mechanism allows a type to be a parameter in the definition of a class or a function.
 
 The template class C prefix specifies that a template is being declared and that a type argument C will be used in the declaration.
 
@@ -86,8 +82,7 @@ Members of a template class are themselves templates parameterized by the parame
 template<class C> 
 String<C>::String() => member constructor
 
-A version of a template for a particular template argument
-is called a specialization.
+A version of a template for a particular template argument is called a specialization.
 
 A template can take type parameters, parameters of ordinary types such as ints, and template parameters.It should be compile time deducible like - constant expression/val, the address of an object or function with external linkage(static function), or a non-overloaded pointer to member(same generated class).
 
@@ -120,7 +115,7 @@ template<> class Vector<void*>{ => complete specialization no agument deduction 
 	void* operator[] (int i);
 }
 
-template<class T> class Vector<T*>:: private Vector<void*>{ => partial initialization called for any pointer type like vectoy<Shape*> / vector<int**>
+template<class T> class Vector<T*>:: private Vector<void*>{ => partial initialization called for any pointer type like vector<Shape*> / vector<int**>
 	public:
 	typedef Vector<void*> Base
 	Vector(): Base(){}
@@ -145,9 +140,34 @@ template<> bool less(const char* a, const char* b){return a < b; } or,
 
 template<> bool less<const char*>(const char* a, const char* b){return a < b; }
 
-virtual functions provide is called run-time polymorphism, and what templates offer is called compile-time polymorphism or parametric polymorphism.If no hierarchical relationship
-is required between these objects, they are best used as template arguments. If the actual types of these objects cannot be known at compile-time, they are best represented as classes derived from a common abstract class.
+virtual functions provide is called run-time polymorphism, and what templates offer is called compile-time polymorphism or parametric polymorphism.If no hierarchical relationship is required between these objects, they are best used as template arguments. If the actual types of these objects cannot be known at compile-time, they are best represented as classes derived from a common abstract class.
 
 Comparator for c++ sort:
 true for less & eq => No change
 false for greater => swap
+
+In C++ input and output is performed in the form of sequence of bytes or more commonly known as streams.
+ofstream os("file.txt")
+ifstream is("file.txt")
+
+is >> n
+while(is) // works when last read(above) was success-full. initially the fail bit is unset, so applying it without a previous read is faulty.
+string link;
+getline(is, line) => leading and trailing whitespace are kept untill \n. \n is read but not included in target str.
+cin >> line // leadind ws is igored | trailing ws is left in the stream 
+cin.get(ch) // get any char including ws
+
+Stream Iterators allow us access to all the powerful STL algorithms like for_each, replace_if which take an input range to operate on.
+A particularly useful function is the copy() function. 
+
+    vector<string> strings_v; 
+    ifstream fin("input_file.txt"); 
+    istream_iterator<string> fin_it(fin); // can be any istream
+    istream_iterator<string> eos; // stram Iterators stop only if eos encountered not on ws
+    ostream_iterator<string> cout_it(cout, " "); 
+    copy(fin_it, eos, back_inserter(strings_v)); 
+    sort(strings_v.begin(), strings_v.end()); 
+    copy(strings_v.begin(), strings_v.end(), cout_it); 
+ 
+getline(cin, str);
+istringstream ss(str); => preferably used togather to use stream Iterators
