@@ -29,4 +29,10 @@ We can drop off added security like SSL once past LB into private server network
 RAID: Redundant Array of Independent Disk:
 RAID0 - Slice of data written over multiple disk(Faster)
 RAID1 - Replication Disk 1:1(fault tolerant storage)
+LB can work at L3/L4/L7
+
+You can think of Netflix as being divided into three parts: the client, the backend, and the content delivery network (CDN). Netflix uses two different clouds: AWS and Open Connect.
+The video chunks are then put through the pipeline so they can be encoded in parallel. 
+A CDN is a content distribution network. - Distribution means video files are copied from a central location, over a network and stored on computers located all over the world. For Netflix, the central location where videos are stored is S3. 
+So Netflix started developing Open Connect, its own purpose-built CDN. Open Connect launched in 2012.Netflix developed its own computer system for video storage. Netflix calls them Open Connect Appliances or OCAs.
 

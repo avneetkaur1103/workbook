@@ -1,0 +1,70 @@
+Check divisibility in a binary stream:(regular method causes overflow for big stream)
+only raminder needs to be maintained => (mx)%n = (xan)%n + (xr)%n = 0 + (xr)%n = (xr)%n;
+# -----------------
+count numbers that dont contain 3
+'msd' --> the most significant digit in n 
+'d'   --> number of digits in n.
+count(n) = n if n < 3
+count(n) = n - 1 if 3 <= n  10 and msd is not 3
+count(n) = count( msd * (10^(d-1)) - 1) if n > 10 and msd is 3
+# -----------------
+The sieve of Eratosthenes is one of the most efficient ways to find all primes smaller than n when n is smaller than 10 million or so
+for (int p=2; p*p<=n; p++) 
+{ 
+ 	if (prime[p] == true) 
+    { 
+       for (int i=p*p; i<=n; i += p) // p*p => next smallest or equal number to p is p
+       prime[i] = false; 
+    } 
+}
+count(&prime[2], &prime[n], true)
+complexity => O(nloglogn)
+# ------------------
+https://www.geeksforgeeks.org/generate-integer-from-1-to-7-with-equal-probability/
+Given a function foo() that returns integers from 1 to 5 with equal probability, write a function that returns integers from 1 to 7 with equal probability using foo() only. 
+2 things:
+1. Should generate the no 1-7x with equal probability. return mod 7.
+2. descard the no if not in 1-7x, to maintain the equal probability.
+# -------------------
+fair coin from a biased coin H(0.6)/T(0.4)
+HT = TH => 0.24 toss twice and decide the result.
+# -------------------
+Generate next-higher permutation
+1. Take the previously printed permutation and find the rightmost character in it, which is smaller than its next character. Let us call this character as ‘first character’.
+2. Now find the ceiling of the ‘first character’. Ceiling is the smallest character on right of ‘first character’, which is greater than ‘first character’. Let us call the ceil character as ‘second character’.
+3. Swap the two characters found in above 2 steps.
+4. Sort the substring (in non-decreasing order) after the original index of ‘first character’
+# -------------------
+Fisher–Yates shuffle Algo => pick last pos and swap it with randomly selected pos in range [0,last]
+for i in range(n-1,0,-1): # select pos
+        j = random.randint(0,i+1) # find element 
+        arr[i],arr[j] = arr[j],arr[i]
+
+For a shuffle to be random:
+1. For a selected pos all elements get equal probability equal probability.
+works in growing range like stream as well. => can be used in reservoir sampling.
+# ---------------------
+Binomial Coeff:
+C(n, k) = n! / (n-k)! * k!
+C(n, k) = [n * (n-1) * .... * (n-k+1)] / [k * (k-1) * .... * 1]
+
+A number is Fibonacci if and only if one or both of (5*n2 + 4) or (5*n2 – 4) is a perfect square
+
+Trailing 0s in n! = Count of 5s in prime factors of n! = floor(n/5) + floor(n/25) + floor(n/125) + ....
+Check if 8 puzzle is solvable => It is not possible to solve an instance of 8 puzzle if number of inversions is odd in the input state.
+# ---------------------
+Coprime No => HCF == 1 => measure a litre of water kind problem
+
+Bit Magic:
+----------
+~x = -(x+1) [ ~ is for bitwise complement ] => ~x+1 = -x (2's complement) => add 1 to no = -(~no) => 2's comp(1's comp) = no + 1
+Turn of the rightmost set bit => n & (n - 1); 
+-1 = > 11111111111 => all ones in 2's complement
+
+Half Adder:
+    while (y != 0)  
+    {  
+        int carry = x & y;  
+        x = x ^ y;  
+        y = carry << 1;  
+    }  

@@ -15,20 +15,19 @@ X oprator&(X) -> binary bitwise &
 
 # ------------ #----------- # ----------------
 For a binary operator @, x @y where x is of type X and y is of type Y is resolved like this:
-[1] If X is a class, determine whether class X or a base of X defines o p e r a t o r @ as a member; if
+[1] If X is a class, determine whether class X or a base of X defines operator @ as a member; if
 so, that is the @ to try to use.
 [2] Otherwise,
 – look for declarations of @ in the context surrounding x @y ; and
 – if X is defined in namespace N , look for declarations of @ in N ; and
 – if Y is defined in namespace M , look for declarations of @ in M .
-If declarations of o p e r a t o r @ are found in the surrounding context, in N
 # ------------ #----------- # ----------------
 
 No implicit conversion is applied to left of ./->
 
 Only one level of implicit conversion is legal.
 User defined conversions:
-The i s t r e a m and o s t r e a m types rely on a conversion function to enable statements such as:
+The istream and ostream types rely on a conversion function to enable statements such as:
 while (cin >>x ) cout<<x ;
 
 It follows that a friend function should either be explicitly declared in an enclosing scope or take an argument of its class. If not, the friend cannot be called.
@@ -152,9 +151,9 @@ ifstream is("file.txt")
 
 is >> n
 while(is) // works when last read(above) was success-full. initially the fail bit is unset, so applying it without a previous read is faulty.
-string link;
-getline(is, line) => leading and trailing whitespace are kept untill \n. \n is read but not included in target str.
-cin >> line // leadind ws is igored | trailing ws is left in the stream 
+string line;
+getline(is, line) => leading and trailing whitespace are kept until \n. \n is read but not included in target str.
+cin >> line // leading ws is igored | trailing ws is left in the stream 
 cin.get(ch) // get any char including ws
 
 Stream Iterators allow us access to all the powerful STL algorithms like for_each, replace_if which take an input range to operate on.
@@ -163,11 +162,116 @@ A particularly useful function is the copy() function.
     vector<string> strings_v; 
     ifstream fin("input_file.txt"); 
     istream_iterator<string> fin_it(fin); // can be any istream
-    istream_iterator<string> eos; // stram Iterators stop only if eos encountered not on ws
-    ostream_iterator<string> cout_it(cout, " "); 
+    istream_iterator<string> eos; // stream Iterators stop only if eos encountered not on ws
+    ostream_iterator<string> cout_it(cout, " "); " " -> separator
     copy(fin_it, eos, back_inserter(strings_v)); 
     sort(strings_v.begin(), strings_v.end()); 
     copy(strings_v.begin(), strings_v.end(), cout_it); 
  
 getline(cin, str);
-istringstream ss(str); => preferably used togather to use stream Iterators
+istringstream ss(str); => preferably used together to use stream Iterators
+
+srand(time(NULL)); // NULL = 0 current time
+
+Names in the expression-list of a mem-initializer are evaluated in the scope of the constructor for which the mem-initializer is specified.
+Blah(std::vector<int> vec): vec(vec){} => legal
+
+Are you allowed to have a static const member function? Explain your answer => No
+A const member function is one which isn’t allowed to modify the members of the object for which it is called. A static member function is one which can’t be called for a specific object.
+Thus, the const modifier for a static member function is meaningless, because there is no object associated with the call.
+
+A class that specifies the life and scope of its variables and functions is called a storage class.
+In C++ following the storage classes are supported: auto, static, register, extern, and mutable.
+
+Using an extern "C" declaration:
+
+How can a C function be called in a C++ program?
+	//C code
+	void func(int i)
+	{
+		//code
+	}
+
+	void print(int i)
+	{
+		//code
+	}
+	//C++ code
+	extern "C"{
+	void func(int i);
+	void print(int i);
+	}
+
+	void myfunc(int i)
+	{
+	   func(i);
+	   print(i);
+	}
+
+Although a function is defined as Inline, it is completely compiler dependent to evaluate it as inline or not.
+
+Each class has its own constructors and destructors. The derived class also does not inherit the assignment operator of the base class and friends of the class. 
+# ------------ #----------- # ----------------
+Smart pointer:
+auto_ptr<T>:
+------------
+This class template is deprecated as of C++11. unique_ptr is a new facility with a similar functionality, but with improved security.auto_ptr is most charitably characterized as a valiant attempt to create a unique_ptr before C++ had move semantics.
+The copy constructor and the assignment operator of auto_ptr do not actually copy the stored pointer instead they transfer it,
+leaving the first auto_ptr object empty. This was one way to implement strict ownership so that only one auto_ptr object can own the pointer at any given time
+	int main() 
+	{ 
+	    // p1 is an auto_ptr of type A 
+	    auto_ptr<A> p1(new A); 
+	    p1->show(); 
+	  
+	    // returns the memory address of p1 
+	    cout << p1.get() << endl; 
+	  
+	    // copy constructor called, this makes p1 empty. 
+	    auto_ptr<A> p2(p1); 
+	    p2->show(); 
+	  
+	    // p1 is empty now 
+	    cout << p1.get() << endl; 
+	  
+	    // p1 gets copied in p2 
+	    cout << p2.get() << endl; 
+	  
+	    return 0; 
+	}
+
+unique_ptr<T>:
+--------------
+std::unique_ptr was developed in C++11 as a replacement for std::auto_ptr.
+unique_ptr should be the default smart pointer used by new C++ code, replacing "raw" pointers as much as possible.
+unique_ptr cleanly represents the single ownership idiom - it cannot be copied(but moved) and assigned, and it cleans up the pointed object when it's destructed.
+use unique_ptr by default and switching to shared_ptr if the need arises.
+
+int main(int argc, char** argv) {
+
+    {
+        unique_ptr<Foo> fp(new Foo());
+
+        unique_ptr<Foo> fp2(fp);    // ERROR! can't copy unique_ptr
+        unique_ptr<Foo> fp3;
+        fp3 = fp;                   // ERROR! can't assign unique_ptr
+        fp3 = std::move(fp); 		// OK
+
+    }
+
+shared_ptr<T>:
+--------------
+A shared_ptr is a container for raw pointers. It is a reference counting ownership model i.e. it maintains the reference count of its contained pointer in cooperation with all copies of the shared_ptr.
+	int main(){
+		shared_ptr<A> p1(new A); 
+	    cout << p1.get() << endl; 
+	    shared_ptr<A> p2(p1); 
+	    cout << p1.use_count() << endl; 	// => 2
+	}
+
+weak_ptr<T>:
+------------
+A weak_ptr is created as a copy of shared_ptr. It provides access to an object that is owned by one or more shared_ptr instances but does not participate in reference counting.
+The existence or destruction of weak_ptr has no effect on the shared_ptr or its other copies. It is required in some cases to break circular references between shared_ptr instances.
+use when:
+When you do want to refer to your object from multiple places – for those references for which it’s ok to ignore and deallocate (check for null, when you try to dereference).
