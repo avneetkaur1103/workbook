@@ -1,0 +1,18 @@
+1. Listen for extra details - it will be needed to solve the problem/ or, break the BCR & solve it optimally for the special info
+2. Examplify - Very Crucial
+
+Solution & Optimization Technique:
+----------------------------------
+1.Remove BUD
+	B -> Bottleneck
+	U -> Unnecessary work 
+	D -> Duplicate Work
+
+2. DIY -> Don't think of an algo think how would you do it manually & implement that => thats your algo :)
+
+3.Simplify & Generalize => when it's a messy information like jerseys with number instead of number.
+
+4. Base Case Build: => DP like cases / Divide & Conquer
+
+5. Data Structure Brainstorm => Iterate & try different data structure see it implicitly solves or reduces the problem.
+
