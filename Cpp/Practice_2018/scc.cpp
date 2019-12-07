@@ -17,7 +17,7 @@ public:
 	void addEdge(int u, int v){
 		adj[u].push_back(v);
 	}
-}
+};
 
 void fillStack(Graph& g, std::vector<bool>& visited, int src, stack<int>& stackOrder){
 	visited[src] = true; 

@@ -1,25 +1,37 @@
-// Cracking the coding interview Q - 5.4
 #include <bits/stdc++.h>
 using namespace std;
 
-unsigned int next_greater_no(unsigned int n){
-	int start = -1;
-	for(int i = 0 ; i < 32; i++){
-		if(n & (1 << i)){
-			start = i;
-			break;
-		}
-	}
-	if(start == -1){
-		cout << "No bit set" << endl;
-		return -1;
-	}
-	unsigned int temp = (n ^ (n + (1<<start))); //move 1 to a postion which would be set for next higer bit and all 0s
-	cout << "Debug Start: " << start << endl;
-	return (n + (1<<start))|((temp - 1) >> (start+2));
-}
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ };
+class Solution {
+public:
+    int maxPathSumUtil(TreeNode* root, int& result){
+        if(!root)
+            return 0;
+        int left = maxPathSumUtil(root->left, result);
+        int right = maxPathSumUtil(root->right, result);
+        result = max(result, root->val);
+        result = max(result, root->val+max(left, right));
+        result = max(result, root->val+left+right);
+
+        return root->val+ (max(left, right) > 0? max(left, right): 0);
+    }
+    int maxPathSum(TreeNode* root) {
+        int result = INT_MIN;
+        maxPathSumUtil(root, result);
+        return result;
+    }
+};
 int main(){
-	unsigned int x = 12;
-	unsigned int result = next_greater_no(x);
-	cout << bitset<32>(result) << endl;
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->left->left = new TreeNode(3);
+    root->left->left->left = new TreeNode(4);
+    root->left->left->left->left = new TreeNode(5);
+    Solution sol;
+    cout << "Ans: " << sol.maxPathSum(root);
 }

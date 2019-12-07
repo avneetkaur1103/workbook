@@ -1,0 +1,297 @@
+# ------------ SQL vs. NoSQL --------------
+Non-relational databases are unstructured, distributed, and have a dynamic schema.
+Most common types of NoSQL:
+	1. Key-Value Stores: Data is stored in an array of key-value pairs e.g Redis, Memcache and Dynamo.
+	2. Document Databases: In these databases, data is stored in documents (instead of rows and columns in a table) and these documents are grouped together in collections. Each document can have an entirely different structure. Document databases include the CouchDB and MongoDB.
+	3. Wide-Column Databases: Instead of ‘tables,’ in columnar databases we have column families, which are containers for rows. Unlike relational databases, we don’t need to know all the columns up front and each row doesn’t have to have the same number of columns. Columnar databases are best suited for analyzing large datasets - big names include Cassandra and HBase
+	4. Graph Databases: These databases are used to store data whose relations are best represented in a graph. Data is saved in graph structures with nodes (entities), properties (information about the entities), and lines (connections between the entities). Examples of graph database include Neo4J and InfiniteGraph.
+
+SQL databases are vertically scalable whereas NoSQL databases are horizontally scalable, meaning we can add more servers easily in our NoSQL database infrastructure to handle a lot of traffic.
+SQL => Reliability or ACID Compliance (Atomicity, Consistency, Isolation, Durability), good for unchanging & structured data.
+NOSql => When all the other components of our application are fast and seamless, NoSQL databases prevent data from being the bottleneck. Rapid development(frequently changing schema)
+
+# ------------ Overview --------------
+1. Requirements => Is tweet text only?, Do we need to support search? etc.
+
+2. Define interfaces => establish the exact contract expected from the system, but will also ensure if we haven’t gotten any requirements wrong.
+	post_tweet(userid, tweet, timestamp)
+	get_timelime(user_id, timestamp)
+
+3. Scale estimation => no of tweets/s, total userbase etc (Optional)
+
+4. Define data models & storage => Defining the data model early will clarify how data will flow among different components of the system. Later, it will guide towards data partitioning and management.We should be able to identify various entities of the system, how they will interact with each other and different aspect of data management like storage(NoSql vs Sql) & partition(partition criteria) => helps you pick storages DB, Caches, File etc for HLD.
+	User: UserID, Name, Email, DoB, CreationData, LastLogin, etc.
+	Tweet: TweetID, Content, TweetLocation, NumberOfLikes, TimeStamp, etc.
+
+5. High Level Design => Draw a block diagram with 5-6 boxes representing the core components of our system. We should identify enough components that are needed to solve the actual problem from end-to-end.
+For Twitter, at a high-level, we will need multiple application servers to serve all the read/write requests with load balancers in front of them for traffic distributions. If we’re assuming that we will have a lot more read traffic (as compared to write), we can decide to have separate servers for handling these scenarios. DB & File Store.
+
+6. Detailed Design => Dig deeper into two or three components; interviewer’s feedback should always guide us what parts of the system need further discussion. Present different approaches, their pros and cons, and explain why we will prefer one approach on the other.
+a.  how should we partition our data to distribute it to multiple databases? Should we try to store all the data of a user on the same database? What issue could it cause?
+b. How will we handle hot users who tweet a lot or follow lots of people?
+c. Since users’ timeline will contain the most recent (and relevant) tweets, should we try to store our data in such a way that is optimized for scanning the latest tweets?
+d. How much and at which layer should we introduce cache to speed things up?
+e. What components need better load balancing?
+
+# ------------ Tiny Url & PasteBin --------------
+1. Requirements.
+	a. short a given url and return url or HTTP404 => create_short_url(url,ttl=default)
+	b. redirect a sorted url => redirect(short_url)
+	extra: cleanup expired url, url should not be guessable, low-latency, highly-available, url-length
+
+2. Interface: Done
+3. Capacity estimate
+	a. Write: How many urls/s * ttl => 200 urls/s * 5 years => 155M urls * size => 
+	b. Read: 200 * write/s => 100 * 200/s => 20K read/s
+
+4. Data Design:
+	Short_URL_Key: [Original_Url, TTL, User_ID] => NoSql Key-Value(e.g Redis)/wide-column DB(e.g Cassandra) unless we use joins for live analytics(batch will do OK)
+	User_ID: [Name, Email]
+
+5. HLD: 
+
+6. Details:
+	a. Encoding Algo:
+		1. Get hash from big_url => issue: collision, uneven distribution, maybe predictable
+		2. Map Big_Url to pre-generated random key => consize, even distribution
+	b. Data Partition: hashes on short_url key with consistent hashing
+	c. Cache: Cache over DB for key lookup. LRU or MFU
+	d. Load-Balancing: Client-Application / Client - DB Cache (Master-Slave)/ Application - DB 
+
+	
+7. Extra:
+	a. Lazy clean up => if access fails due to expired ttl remove it from DB and cache.
+	b. clean-up demon => Run when low loads on server
+	c. put the removed key back in DB for reuse
+
+# ------------ DropBox --------------
+Note: Efficient data storage and retrieval, syncing 
+1. Requirements:
+	a. Upload/Download from any device.
+	b. Share
+	c. Syncing
+	d. Large File Storage => means data need splitting & sequencing/rearrangement => download only those chunks which for diff between 2 versions for efficient syncing & retry only for failed chunks to upload and download 
+	e. Modify File & sync it across
+
+2. Interface:
+	a. upload => user should specify workspace and it uploads all files added there across device
+	b. sync => lead to download/upload to/from workspace
+
+3. Capacity Estimates: 
+	a. read/write => 10:1
+	b. User = 500M, File = 200/user, size = 1 MB, total size = 500*(10^6)*200*1 MB => 100 PB
+
+4. Data Design:
+	File: [id, name, version_id, owner, device]
+	Chunks: [id, chunk_version_id, seq_no, cloud_store_location, file_id, file_version_id] => file_version_id changes for any chunk change 
+	User: [ID, mail]
+	Device:[id, workspace_loc, user_id]
+	Shared_Files: [File_id, shared_to_user_id] #default file owner
+
+5. HLD: 
+Note: Big Data upload/download should be done over dedicated stream connection & metadata sync can be done asynchronously over long-poling HTTP. We need to have a gateway which support above 2 connection protocols.For synchronization around device we need to adapt push mechanism where server should alert us => which leads to have a sync service running on server.
+Control Plane => Metadata upload/download => triggered by sync service at server and client.
+Data Plain => File upload/download to cloud server 
+
+			| <-> Data Server <-> cloud store
+	client  | <-> MetaData Server <-> Sync Service(Event Driven) <-> Metadata Store 
+		 Gateway
+
+6. Details:
+	a. Client Core Services:
+		1. Indexer: Sequence & Delivery / Download & Patch => Update(Upload/Download) local Metadata -> (chunker - upload) / (download - chunker)
+		2. Chunker: Splitting and Packaging => Split a large File | Stitch chunks
+		3. Syncer => Detect diff to initiate upload & download via indexer
+	b. Sync service: Event driven will share diff in metadata for all changed to all user+device which has the file shared to, which will be pulled by syncer on client devices.
+	c. Message Queue for upload/download data reliably.
+	d. Metadata Partitioning: Hashes of ID =>  File on FileID, Chunks on ChunksID etc.
+	e. Load-Balancers: Client - DataServer | Client - MetadataServer | MetaDataServers - MetaDataDB
+	f. cache: File chunks caching with memcache | metadata caching may not be needed since any change id DB need to be notified only upto 3 devices
+ 
+7. Extras:
+	Data Duplication: 
+
+# ------------ Instagram --------------
+1. Requirements: 
+	a. Post Photos => post(user_id, photos, msg, time)
+	b. NewsFeed => news_feed(user_id, time)
+	c. Follow => follow(user_id_1, user_id_2)
+	extras: highly-available, low latency for news feeds, eventual consistency
+
+2. Interface: Done
+3. Capacity Estimates:
+	a. read/write=> 200/1
+	b. no limits on no of upload
+	c. uploads/day => 2M, total size for 10 years => 2*(10^6)/day*200KB*10yr ~= 1500TB
+
+4. Data Design:
+	Photo:[photoID, location, timestamp, userID] => object store for file, NoSql for metadata since eventual consistency
+	User: [userId, name, email, lastlogin] => Sql since Static table
+	Follow: [user_id_1, user_id_2] => No Sql
+
+5. HLD:
+Small data(Limited Photos) can be uploaded over same connection which is used for reads, but for efficiency we can have 2 separate of server for read & write. Also reads are faster than write and this is not text we are writing.
+Photos are stored in object store & metadata in Noqsl DB(eventual consistency).
+
+		
+						|Image Upload Server -> Object Store
+				Client 	|  (file from OS)/ \(file_link)
+						|Server <-> Metadata DB
+					Gateway
+
+6. Details:
+	a. Components
+		Server -> Image Upload Service, NewsFeed generation & Ranking, Suggestions, Profile, Follow, Comments etc.
+		Client -> Uses Server APIs
+	b. Data Partitioning: Photo metadata on photoId | User Data on userId | Follow on userId 
+	c. Ranking & Newsfeed generation: Need to query all user one follow and get latest photo, for NoSql if we keep timestamp as a part of PhotoID on which index is build, our query result will be much faster. later we can pass this ranking service to generate timeline and cache it and fanout if there is any update from people we follow.
+	d. Caching: CDN over photos. Memcache over metadata DBs.
+	e. Fanout - Cache the time line for each user & put it right before application server. If there are any post update all timeline caches who follows this user.
+	f. Handling Celebrity Fanout: Do it in chunks & if newsfeed generated by application is relatively earlier update user timeline & timeline cache.
+	g. Load Balancing - Client - Server | Client - Timeline Cache(Master, Slaves) | Server to DB(Master-Slave) 
+
+# ------------ Netflix --------------
+1. Requirements
+	a. upload videos => upload(api_key, video_title, tags, video_content_location)
+	b. stream => stream_video(api_key, video_id, offset, resolution)
+	c. search => search_videos(api_key, search_criteria)
+	d. comments/likes on video
+	extras: real-time experience in streaming, eventual consistency
+
+2. Interfaces: Done
+3. Capacity Estimates:
+	a. 1.5B User/500M DAU/5 Videos/day => 500M*5/86400 sec ~= 30K vids/sec
+	b. read/write = 200/1
+
+4. Data Design:
+	Video:[id, title, description, size, thumbnail_id, owner, nlikes, nview, ndislikes] => Sql
+	Comment: [id, videoId, userId, comment_text, timestamp] => Sql
+	User:[id, name, email, descriptions] => Sql
+	Chunks: [id, seq_no, cloud_store_location, video_id] => DFS or Object Store
+
+
+5. HLD:
+Big Data upload/download should be done over dedicated stream connection & metadata transfer can be done asynchronously over HTTP. We need to have a gateway which support above 2 connection protocols. Also Netflix and youtube create & store multiple version file (codecs*resolution) it needs to pass through an encoder via a job queue.
+
+		
+				|<-> CDN
+				|		\
+		Client  |<-> App Server <-> Video Meta DB/ User DB
+				|
+				|<-> Uploader <-> Processing Queue <-> Encoder <-> Object Store
+			Gateway
+
+Processing Queue: Each uploaded video will be pushed to a processing queue to be de-queued later for encoding, thumbnail generation, and storage. Looks like it should have 2 component - persistent store and queue(containing id of data in store to be processed) => does MQ offer this 
+
+6. Details:
+	a. Components
+		Video Encoding: Newly uploaded videos are stored on the server(persistent store) and a new task is added to the processing queue to encode the video into multiple formats. Once all the encoding will be completed the uploader will be notified and the video is made available for view/sharing.
+	b. Data Partition: Videos on video_id | user on user_id
+	c. cache: Push content to CDN periodically | MFU/LRU cache on video meta
+	d. Load Balancing: Consistent hashing in the regional data center. HTTP redirection in case of regional datacenter failure or overload to another region.
+
+# ------------ Distributed Cache --------------
+1. Requirements
+	a. write in to cache => x[key] = value
+	b. read from cache => x[key]
+	extras: Highly available, low latency(obviously cache)
+
+2. Interfaces: Done
+3. Capacity Estimate:
+	a. size = 30TB @ 10M QPS => 30TB/72GB = 420 machine => storage
+	b. handling machine capacity bottleneck => 10M/420 => 23K QPS => 4 * 1000 * 1000 / 23000 microseconds = 170 mus
+	Can we lookup a 72GB memory hashmap in 174 second => No => we need to shard it further the data for load balancing
+
+4. Data Design: N/A
+5. HLD
+
+		Client <-> App Server <-> (cache shards)(master)-(cache shards)(slaves) <-> DB
+
+6. Details:
+	a. Access Policy
+		1. write-through => reliable | reads followed by write
+		2. write-around => Faster write than write-through | Slower overall read | Lots of cache miss
+		3. write-back => faster read/write | not highly consistent
+	b. eviction policy => depends on the application 
+	c. sharding => By key hash consistent hashing
+	d. data structured => deque(storage/eviction) & hash-map(look-up)
+	e. multi-threaded machine => key wise read/write lock would reduce latency
+	f. replication/reliability - master-slave for shards for load distribution & fault-tolerance
+
+=== Notes on highly consistent DB ===
+Keeping just one machine per shard make is naively consistent - problem remains fault tolerance => to solve this we can keep multiple replication of each shard, lets say 3. For every write it is considered if it's successfully written in more than 50% of replica machine, later a mater machine in the shard can do Operation Transformation a obtain a final key value whenever there are write. This cases requires reads always via master so that it can trigger consistency before reading a value. We need to keep a standby master for tolerance in case of master failure.
+
+# ------------ Yelp --------------
+Yelp is a proximity server which are used to discover nearby places, events etc.
+1. Requirements:
+	a. Add/Update/Delete places => add_places(poi_id, title, description, lat, long)
+	b. search in proximity of the location => search(api_key, search_criteria, lat, long, radius)
+	c. review a POI => add_review(review_id, poi_id, review_text, user_id, timestamp)
+	extras: heavy search load, low latency search
+
+2. Interfaces: Done
+3. Capacity Estimates: 
+	a. 500M userbase, 100K QPS
+
+4. Data Design:
+	POI: [poi_id, name, title, desc, lat, long] => don't need to store cell, qtree can be traversed => works better with new additions of places
+	Reviews: [review_id, poi_id, user_id, review_text, rating, timestamp]
+
+5. HLD: 
+	2 Approaches:
+		a. Fixed Grid:  Divide the whole world into fixed size grid and each grid will store all the Places residing within a specific range of longitude and latitude. Can lead to uneven distribution of loads(dense n sparse areas)
+		b. Dynamic Grid: Quad tree for cell store upto 500 places.
+
+6. Details: 
+	a. lookup in quad-tree:
+	How will we find the grid for a given location?: We will start with the root node and search downward to find our required node/grid. At each step, we will see if the current node we are visiting has children. If it has, we will move to the child node that contains our desired location and repeat this process. If the node does not have any children, then that is our desired node.
+
+	How will we find neighboring grids of a given grid? Since only leaf nodes contain a list of locations, we can connect all leaf nodes with a doubly linked list. This way we can iterate forward or backward among the neighboring leaf nodes to find out our desired locations.Another approach for finding adjacent grids would be through parent nodes. We can keep a pointer in each node to access its parent, and since each parent node has pointers to all of its children, we can easily find siblings of a node. We can keep expanding our search for neighboring grids by going up through the parent pointers.
+
+	What will be the search workflow? We will first find the node that contains the user’s location. If that node has enough desired places, we can return them to the user. If not, we will keep expanding to the neighboring nodes (either through the parent pointers or doubly linked list) until either we find the required number of places or exhaust our search based on the maximum radius.
+
+	b. storage:
+		leaf nodes = 500M / 500 => 1M grids
+		internal nodes = 1M * 1/3 | size = 1M * 1/3 * 4(4 child pointers) * 8 = 10 MB | 2 lat, long pair can be derived when moving down.
+
+	c. Data Partition:
+		a. For Fixed Grid: Partition on region hash => we can derive region from given location & return return result fro places in that region.
+		b. For Quad Tree: partition on location_id, like we do in B-tree which are stored @ leaf.
+		While building our QuadTree, we will iterate through all the places and calculate the hash of each LocationID to find a server where it would be stored. To find places near a location, we have to query all servers and each server will return a set of nearby places. A centralized server will aggregate these results to return them to the user.
+
+		Or alternatively we can try put maximal close that fits the machine, if filled move to next machine. Serially => for lookup.
+	d. Replication:
+	e. Load Balancing:
+	f. Ranking: Basic sort by avg rating.
+
+# ------------ Uber --------------
+
+Extending it from Yelp to add moving vehicle across cells => Dynamic size of cell entires.
+
+1. Requirements:
+	a. drivers need to regularly update location to server. => update_loc(driver_id, lat, long)
+	b. user get to see all nearby cabs. => find_cabs(lat, long)
+	c. book a ride => book_ride(user_id, lat, long, dest_lat, dest_long)
+	d. ETA
+	extra: system should be able to contact driver in real time => long polling / push notification
+
+2. HLD:
+Lets consider all driver update their pos every 3 sec.
+We can be lazy about updating driver pos => every 15 sec + when region changes + when there are query on the region where driver was last updated, till then we can keep it some hash table and apply OT based on above conditions to update the final location in qtree.
+
+			Client	| <-> Aggregation Server <-> Qtree Server <-> Qtree Index <-> DB
+			Driver	| -> Location Server -> Key-Value Store
+	Client/Driver 	| <- Push Notification Server (WS/XMPP) <- Location Server <- Key-Value Store
+					|
+				Gateway
+
+3. Details:
+	a. Updates & repartitioning qtree:
+		We can follow delayed update strategy and add extra 10 % stretch before partitioning the qtree node. we may/maynot club it back when load reduces.
+	b. find nearby cabs: 
+		Can be pulled by user when opening app
+	c. ETA 
+		Modified A* with distance matrix + traffic weight matrix + other matrix (adjacency matrices)
+
+
+

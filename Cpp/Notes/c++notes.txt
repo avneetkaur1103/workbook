@@ -259,6 +259,13 @@ int main(int argc, char** argv) {
 
     }
 
+Iterating over container of unique pointer: Use reference auto& to avoid copying unique_ptr
+	std::vector< std::unique_ptr< YourClass >> pointers;
+	for( auto&& pointer : pointers ) {
+	    pointer->functionOfYourClass();
+	}
+
+
 shared_ptr<T>:
 --------------
 A shared_ptr is a container for raw pointers. It is a reference counting ownership model i.e. it maintains the reference count of its contained pointer in cooperation with all copies of the shared_ptr.
@@ -275,3 +282,5 @@ A weak_ptr is created as a copy of shared_ptr. It provides access to an object t
 The existence or destruction of weak_ptr has no effect on the shared_ptr or its other copies. It is required in some cases to break circular references between shared_ptr instances.
 use when:
 When you do want to refer to your object from multiple places – for those references for which it’s ok to ignore and deallocate (check for null, when you try to dereference).
+
+Iterrat
