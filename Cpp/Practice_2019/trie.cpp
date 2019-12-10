@@ -1,112 +1,93 @@
-// implement trie with insert, search & delete
+// https://leetcode.com/explore/interview/card/google/62/recursion-4/370/
 
-#include <bits/stdc++.h>
-using namespace std;
-
-class Trie{
-    class Trie_Node{
+class Solution {
+    class TrieNode{
         public:
-            bool is_end_of_word;
-            Trie_Node* children[26];
+        TrieNode* children[26];
+        set<int> words;
     };
-    public:
-        Trie_Node* root;
-
-        Trie(): root{new Trie_Node()}{}
-
-        void insert(string& str){
-            Trie_Node* temp = root;
-            for(auto s: str){
-                if(!temp->children[s - 'a'])
-                    temp->children[s - 'a'] = new Trie_Node();
-                temp = temp->children[s - 'a'];
-            }
-            temp->is_end_of_word = true;
-        }
-
-        bool search(string& str){
-            Trie_Node* temp = root;
-            for(auto s: str){
-                if(!temp->children[s - 'a'])
-                    return false;
-                temp = temp->children[s - 'a'];
-            }
-            return temp && temp->is_end_of_word;
-        }
-
-        Trie_Node* get_prefix_end(Trie_Node* root, string str){
-            Trie_Node* temp = root;
-                for(auto s: str){
-                    if(!temp->children[s - 'a'])
-                        return nullptr;
-                    temp = temp->children[s - 'a'];
+    class Trie{
+        public:
+        TrieNode *root;
+        Trie(): root{new TrieNode()}{}
+        void add(string& s, int index){
+            TrieNode* temp = root;
+            for(auto ch: s){
+                if(temp->children[ch-'a'])
+                    temp = temp->children[ch-'a'];
+                else{
+                    temp->children[ch-'a'] = new TrieNode();
+                    temp = temp->children[ch-'a'];
                 }
-                return temp;
-        }
-
-        void prefixes(string str){
-            Trie_Node* end = get_prefix_end(root, str);
-            print(end, str, "");
-        }
-
-        void remove(string& str){
-            root = remove(root, str, 0);
-        }
-
-        void print(){
-            print(root, "", "");
-        }
-
-    protected:
-        void print(Trie_Node* root, string prefix, string str){
-            if(root && root-> is_end_of_word)
-                cout << prefix << str << endl;
-            for(int i = 0; i < 26; i++){
-                if(root->children[i])
-                    print(root->children[i], prefix, str+(char)(i+'a'));
+                temp->words.insert(index);
             }
         }
-        
-        Trie_Node* remove(Trie_Node* root, string& str, int index){
-            if(!root)
-                return root;
-            if(index == str.size()){
-                if(root->is_end_of_word)
-                    root-> is_end_of_word = false;
-                if (all_of(&root->children[0], &root->children[0]+26, [](auto x){return !x;})){
-                    delete root;
-                    root = nullptr;
-                }
-                return root;
+        set<int> get_word_for_prefix(string& prefix){
+            TrieNode *temp = root;
+            for(auto ch: prefix){
+                if(temp->children[ch-'a'])
+                    temp = temp->children[ch-'a'];
+                else
+                    return set<int>();
             }
-            root->children[str[index]-'a'] = remove(root->children[str[index]-'a'], str, index+1);
-
-            if( !root->is_end_of_word && all_of(&root->children[0], &root->children[0]+26, [](auto x){return !x;})){
-                delete root;
-                root = nullptr;
-            }
-            return root;
+            return temp->words;
         }
+    };
+
+public:
+    void all_square(vector<string>&words, vector<int>& visited, int size, int index, int len, vector<string>& square, vector<vector<string>>& result, Trie& trie){
+        if(index == len){
+            result.push_back(square);
+            return;
+        }
+        stringstream ss;
+        for(int i = 0; i < index; i++){
+            ss << square[i][index];
+        }
+        string prefix = ss.str();
+        set<int> iwords = trie.get_word_for_prefix(prefix);
+        for(int i : iwords){
+            if(!visited[i]){
+                //visited[i] = true;
+                square[index] = words[i];
+                all_square(words, visited, size, index+1, len, square, result, trie);
+                //visited[i] = false;
+            }
+        }
+    }
+
+    vector<vector<string>> wordSquares(vector<string>& words) {
+        if(!words.size())
+            return vector<vector<string>>();
+
+        int len = words[0].size();
+        int n = words.size();
+
+        Trie trie;
+        for(int i = 0; i < n; i++){
+            trie.add(words[i], i);
+        }
+
+        vector<string> square(len);
+        vector<int> visited(n, false);
+        vector<vector<string>> result;
+        for(int i = 0; i<n; i++){
+            //visited[i] = true;
+            square[0] = words[i];
+            all_square(words, visited, n, 1, len, square, result, trie);
+            //visited[i] = false;
+        }
+        return result;
+    }
 };
-
 int main(){
-    string words[] = { "the", "a", "there",
-                      "answer", "any", "by",
-                      "bye", "their", "hero", "heroplane" };
-    Trie trie;
-    for(auto word: words)
-        trie.insert(word);
+    vector<string> words = {"abat","baba","atan","atal"};
+    Solution sol;
+    auto result = sol.wordSquares(words);
 
-    cout << "All Keys in the Trie " << endl;
-    trie.print();
-    cout << "Words for prefix: th " << endl;
-    trie.prefixes("th");
-
-    cout << "Is key: " << words[0] << " in trie " << trie.search(words[0]) << endl;
-    trie.remove(words[0]);
-    cout << "Is key: " << words[0] << " in trie " << trie.search(words[0]);
-    cout << "Keys after deletion" << endl;
-    trie.print();
-
-
+    for(auto iresult: result){
+        for(auto words: iresult)
+            cout << words << endl;
+        cout << "-------" << endl;
+    }
 }
