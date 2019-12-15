@@ -14,7 +14,6 @@ int largest(vector<int>& hist){
 			st.pop();
 			int j = st.empty() ? -1 :st.top();
 			int area = hist[top] * (i-j-1);
-			cout << "top: " << top << " i: " << i << " j: " << j  << " area " << area << endl;
 			max_area = max(area, max_area);
 		}
 	}
@@ -23,7 +22,6 @@ int largest(vector<int>& hist){
 		st.pop();
 		int j = st.empty() ? -1 :st.top();
 		int area = hist[top] * (i-j-1);
-		cout << "top: " << top << " i: " << i << " j: " << j  << " area " << area << endl;
 		max_area = max(area, max_area);
 	}
 	return max_area;

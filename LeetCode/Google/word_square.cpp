@@ -31,9 +31,10 @@ class Solution {
     };
 
 public:
-    void all_square(vector<string>&words, int size, int index, int len, vector<string>& square, vector<vector<string>>& result){       
+    void all_square(vector<string>&words, int size, int index, int len, vector<string>& square, vector<vector<string>>& result, Trie& trie){       
         if(index == len){
             result.push_back(square);
+            return;
         }
 
         stringstream ss;
@@ -41,12 +42,13 @@ public:
             ss << s[index];
         }
         string prefix = ss.str();
-        set<int> iwords = get_word_for_prefix(prefix);
+        set<int> iwords = trie.get_word_for_prefix(prefix);
         for(int i : iwords){
             if(!visited[i]){
                 visited[i] = true;
-                copy(words[i].begin(), words[i].end(), square[index]);
-                all_square(words, size, index+1, len, square, result);
+                square[index].push_back(words[i]);
+                all_square(words, size, index+1, len, square, result, trie);
+                square[index].pop_back();
                 visited[i] = false;
             }
         }
@@ -56,17 +58,18 @@ public:
         if(!words.size())
             return vector<vector<string>>();
         
-        int word_len = words[0].size();
-        int dict_size = words.size();
+        int len = words[0].size();
+        int n = words.size();
 
         Trie trie;
-        for(auto& word: words){
-            trie.add(word);
+        for(int i = 0; i < n; i++){
+            trie.add(word, i);
         }
+
         vector<vector<char>> square(words_len, vector<char>(word_len));
         vector<int> visited(dict_size, false);
         vector<vector<string>> result;
-        all_square(words, size, 0, word_len, square, result);
+        all_square(words, n, 0, len, square, result, trie);
         return result;        
     }
 };
