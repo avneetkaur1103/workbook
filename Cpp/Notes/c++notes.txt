@@ -108,7 +108,7 @@ template<class T, class C=Cmp<T>> => class C=Cmp<T> is the default template para
 Template Specialization:
 alternative definitions of the template and having the compiler choose between them based on the template arguments provided called user-defined specializations.
 
-template<> class Vector<void*>{ => complete specialization no agument deduction called for vector<void*> vpv
+template<> class vector<void*>{ => complete specialization no agument deduction called for vector<void*> vpv
 	void p
 	//...
 	void* operator[] (int i);
@@ -120,7 +120,7 @@ template<class T> class Vector<T*>:: private Vector<void*>{ => partial initializ
 	Vector(): Base(){}
 	explicit Vector(int i): Base(i){}
 	T*& elem(int i){ return static_cast<T*&> Base::elem(i);}
-	T*& operator(int i) {return static_cast<T*&>(Base::operator[](i))};
+	T*& operator[](int i) {return static_cast<T*&>(Base::operator[](i))};
 	//...
 }
 

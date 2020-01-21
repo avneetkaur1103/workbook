@@ -11,8 +11,7 @@ In fact, the Longest Path problem is NP-Hard for a general graph
 Bellman-Ford:
 ike other Dynamic Programming Problems, the algorithm calculate shortest paths in bottom-up manner. It first calculates the shortest distances which have at-most one edge in the path. Then, it calculates shortest paths with at-most 2 edges, and so on. After the i-th iteration of outer loop, the shortest paths with at most i edges are calculated. There can be maximum |V| – 1 edges in any simple path, that is why the outer loop runs |v| – 1 times.
 
-Floyd-warshall will not work for -ve cycle, for node as a part of -ve will have -inf cost. we may exclude these node for rest of graph to work
-fine with the algo.
+Floyd-warshall will not work for -ve cycle, for node as a part of -ve will have -inf cost. we may exclude these node for rest of graph to work fine with the algo.
 
 Articulation point
 A vertex in an undirected connected graph is an articulation point (or cut vertex) iff removing it (and edges through it) disconnects the graph.
@@ -27,6 +26,9 @@ Eulerian Path is a path in graph that visits every edge exactly once. Eulerian C
 
 [IMP]The meaning of Articulation point and bridges are well suited for underted graph naturally, for directed graph connectivity itself has a very different meaning than underted graph.
 
+Mother vertex in graph: think of it as topological ordering problem since all other vertex can be reached by mother vertex, making every other vertex dependent on mother  => making it last to finish in topogical stack.
+Now check if the last vertex can reach all other vertices.
+
 
 Travelling salesperson problem:
 For graph following triangle-inequality MST produces 2-approximate solution means path produced by mst is at most 2*opt-path.
@@ -40,3 +42,5 @@ The following is simple idea of Ford-Fulkerson algorithm:
 	2) While there is a augmenting path from source to sink. 
 	   Add this path-flow to flow.
 	3) Return flow.
+
+Splitting graph to add psudo nodes: https://www.geeksforgeeks.org/check-if-there-is-a-cycle-with-odd-weight-sum-in-an-undirected-graph/

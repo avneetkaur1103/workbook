@@ -3,7 +3,7 @@ Construct BST from its given level order traversal => Just construct the bst wit
 Check if each internal node of a BST has exactly one child:
     nextDiff = pre[i] - pre[i+1]; 
     lastDiff = pre[i] - pre[size-1]; 
-    if (nextDiff*lastDiff < 0)
+    if (nextDiff*lastDiff > 0)
 
 [IMP]Check if the given array can represent Level Order Traversal of Binary Search Tree
 Do a level-order traversal w.r.t levelarray. Uses queue to store the root and find it's left and right child in levelorder array, add the childs to the queue as found.

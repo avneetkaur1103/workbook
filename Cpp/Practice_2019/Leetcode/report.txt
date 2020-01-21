@@ -1,0 +1,41 @@
+https://leetcode.com/problems/zigzag-conversion/ - 25 min medium
+https://leetcode.com/problems/regular-expression-matching/ - 1 hr+ hard fail
+https://leetcode.com/problems/integer-to-roman/ - 40 min medium - got out of track - lengthy solution
+https://leetcode.com/problems/wildcard-matching/submissions/ - 15 min Hard - reused some code from previous problem
+https://leetcode.com/problems/unique-paths-ii/submissions/ - 14 min medium
+https://leetcode.com/problems/edit-distance/submissions/ - 10 min hard
+https://leetcode.com/problems/maximal-rectangle/ - came up with soln in 5 min had to lookout for optimal sol - 1hr
+https://leetcode.com/problems/scramble-string/ - 30 min hard - wrong misleading input
+https://leetcode.com/problems/serialize-and-deserialize-n-ary-tree/ - hard 1 hr
+https://leetcode.com/problems/closest-binary-search-tree-value-ii/ - hard & lengthy 2hr - problem with specific double value
+https://leetcode.com/problems/binary-tree-longest-consecutive-sequence/ - 10 min medium
+https://leetcode.com/problems/house-robber-iii/ - 15 min medium TLE - fixed in +2 min
+https://leetcode.com/problems/convert-binary-search-tree-to-sorted-doubly-linked-list/ - 8 min medium
+https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/submissions/ - 20 min medium
+https://leetcode.com/problems/reconstruct-itinerary/ -  20 min medium - bugs c++ set iteration
+https://leetcode.com/problems/network-delay-time/ - 20 min medium
+https://leetcode.com/problems/couples-holding-hands/ - hard fail
+https://leetcode.com/problems/keys-and-rooms/ - 10 min medium
+https://leetcode.com/problems/spiral-matrix/ - 20 min medium
+https://leetcode.com/problems/rotate-image/ - 30 min medium
+https://leetcode.com/problems/group-anagrams/ - 15 min medium
+https://leetcode.com/problems/substring-with-concatenation-of-all-words/ - hard bruteforce 1 hr 
+https://leetcode.com/problems/jump-game-ii/ - 20 min hr fails 1 TC couldn't do in O(n)
+https://leetcode.com/problems/search-in-rotated-sorted-array/ - 20 min medium
+https://leetcode.com/problems/delete-nodes-and-return-forest/ - 25 min medium => interview mock practice.
+https://leetcode.com/problems/minimum-swaps-to-make-strings-equal/ - 1hr medium
+
+#---------off beat -----------------
+https://www.geeksforgeeks.org/how-to-print-maximum-number-of-a-using-given-four-keys/ - 10 min medium
+https://www.geeksforgeeks.org/minimum-positive-points-to-reach-destination/ - 15 min - Hard
+CTCI - Recursion & DP => formulated 14 Q in 90 min
+https://www.geeksforgeeks.org/how-to-print-maximum-number-of-a-using-given-four-keys/ - 20 min Hard
+
+Strategy tomorrow:
+------------------
+Take a step back rewrite question in your own word with an example.
+Ask clearfying question and improve problem statement => 5 - 10 min?
+=> Proposing solution 
+	=> Strategy 1: => BF soln & test case run & complexity -> 5 min
+	=> Strategy 2: => optimized algo/ complexity |test run => 5 min | code => 25-30 min 
+Test code => variable / indexes / syntax / test run => 5 min

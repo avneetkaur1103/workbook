@@ -199,7 +199,7 @@ Factories can be be internally using prototype or singleton.
 	private:
 	   static Stooge* s_prototypes[4];
 	};
-	Stooge* Factory::s_prototypes[] = {0, new Larry, new Moe, new Curly};
+	static Stooge* Factory::s_prototypes[] = {0, new Larry, new Moe, new Curly};
 	Stooge* Factory::make_stooge( int choice ) {
 	   return s_prototypes[choice]->clone();
 	}

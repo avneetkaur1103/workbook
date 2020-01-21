@@ -1,3 +1,4 @@
+// https://leetcode.com/explore/interview/card/google/67/sql-2/3046/
 #include <bits/stdc++.h>
 using namespace std;
 

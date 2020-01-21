@@ -57,7 +57,7 @@ D — Dependency Inversion principle
 		int area() = delete; => reduced the functionality of base class, should not happen
 	}
 
-4. Interface segregation principle - A client should never be forced to implement an interface that it doesn’t use or clients shouldn’t be forced to depend on methods they do not use.This happens mostly when one interface contains more than one functionality, and the client only needs one functionality and no other.
+4. Interface segregation principle - A client should never be forced to implement an interface that it doesn’t use or clients shouldn’t be forced to depend on methods they do not use.This happens mostly when one interface contains more than one functionality, and the client only needs one functionality and no other. => No fat interface
 
 class Shape{
 		int area() = 0;
@@ -100,10 +100,10 @@ OOD - Cracking the coding interview
 
 OOD - Coursera:
 ---------------
-Customers often don't know what key - you have to ask question & lead them there in time - Interview aspect.
+Customers often don't know what they want key - you have to ask question & lead them there in time - Interview aspect.
 Study of boxes(what's in them) & lines(how they are related).
-Think of designs are actually views/indexes on the code.
-Approach - Keep it simple. 
+>>Think of designs are actually views/indexes on the code.[IMP]
+Approach - Keep it simple.
 
 Requirement in terms of user stories
 1. As a ______, I want to ______ so that ______.
@@ -149,7 +149,7 @@ Evaluating coupling:
 2. Cohesion :- Complexity within the module. Represents clarity of responsibilities of module. - like performing one task per function/module.
 
 There is always balance to be made between coupling & cohesion.
-For a complex system - Distributing the coupling between the module increases coupling & within the module increases cohesion.
+For a complex system - Distributing the responsibiity between the module increases coupling & within the module increases cohesion.
 
 Software design:- Guides the design of software running as single process.
 Software Architecture:- Software running as multiple process work together and how they relate to each other.

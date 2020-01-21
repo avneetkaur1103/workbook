@@ -1,10 +1,9 @@
-Track:
-Revist C++ which are covered alreday.
-String & Stream online
-Top-Coder STL + BO C++ 11 videos
-Saturday: Final touch C++ => C++ Basic form the c++ overview book + Derived Classes + GeeksForGeeks Coding
-Sunday => GeeksForGeeks Bits + Mathematical Algos + Segment Tree & Trie
-Next:
-HackerRank PS + 5 day design course target
-Next:
-HackerRank PS  + 2-3 designs a day
+This week:
+Tree(Revisit) - by 30th
+Tree(Code) - 3rd
+Segment Tree(Code) - 3rd
+Stack & Heap - 4th
+Graph & Devide & Concur - 5th & 6th
+Arrays & String - 5th & 6th
+DP(CrackCode) - 7th
+Mock - 8th, 9th, 10th

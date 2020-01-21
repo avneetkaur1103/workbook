@@ -5,9 +5,9 @@ Masters Theorem:
 https://www.geeksforgeeks.org/analysis-algorithm-set-4-master-method-solving-recurrences/
 T(n) = aT(n/b) + f(n) |Where b>1 and a>=1
 There are following three cases:
-1. If f(n) = Θ(n^c) where c < Log(b)a then T(n) = Θ(n^Log(b)a)
+1. If f(n) = Θ(n^c) where c < Log(b)a then T(n) = Θ(n^Log(b)a) => sum of const work @ leaves #leaves = n^log(b)a
 2. If f(n) = Θ(n^c) where c = Log(b)a then T(n) = Θ(n^c*Log n)
-3.If f(n) = Θ(n^c) where c > Log(b)a then T(n) = Θ(f(n))
+3.If f(n) = Θ(n^c) where c > Log(b)a then T(n) = Θ(f(n)) => work @ root
 
 It is not possible to construct a general Binary Tree from preorder and postorder traversals.
 
@@ -37,3 +37,8 @@ The idea is to serialize subtrees as strings and store the strings in hash table
 If we take few examples, we can notice that the value of h in a complete binary tree is ceil(log2(N+1)) – 1.
 
 A succinct encoding of Binary Tree takes close to minimum possible space. The number of structurally different binary trees on n nodes is n’th Catalan number. For large n, this is about 4n; thus we need at least about log2 4 n = 2n bits to encode it. A succinct binary tree therefore would occupy 2n+o(n) bits.
+
+To create a tree we need root and left - right partiontion nicely done with 
+inorder -> partition
+preorder/postorder -> roots
+In case of succint encoding we can take this in account and encode root and partition togather in a full binary tree structure.

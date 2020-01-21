@@ -20,7 +20,7 @@ public:
                 count++; start_index++;
                 max_count = max(count, max_count);
             }
-            else if(start[start_index] < end[end_index]){
+            else if(start[start_index] > end[end_index]){
                 count--; end_index++;
             }
             else{

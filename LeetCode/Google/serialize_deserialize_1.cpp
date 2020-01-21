@@ -8,6 +8,7 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+// Full Tree Structure consideration approach
 class Codec {
 public:
     string _serialize(TreeNode *root){

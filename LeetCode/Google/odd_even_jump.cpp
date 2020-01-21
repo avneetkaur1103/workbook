@@ -1,3 +1,4 @@
+// https://leetcode.com/explore/interview/card/google/67/sql-2/3045/
 #include <bits/stdc++.h>
 #define all(c) c.begin(), c.end()
 using namespace std;
