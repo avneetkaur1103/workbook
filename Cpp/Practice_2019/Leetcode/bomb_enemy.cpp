@@ -1,6 +1,4 @@
-#include <bits/stdc++.h>
-using namespace std;
-
+// https://leetcode.com/problems/bomb-enemy/
 class Solution {
 public:
     int maxKilledEnemies(vector<vector<char>>& grid) {
@@ -8,7 +6,7 @@ public:
         if(!n)
             return 0;
         int m = grid[0].size();
-
+        
         vector<vector<int>> dp(n, vector<int>(m, 0));
         int count = 0;
         for(int i = 0; i < n; i++){ // left to right col wise
@@ -55,12 +53,7 @@ public:
         for(int i = 0; i < n; i++)
             for(int j = 0; j < m; j++)
                 result = max(result, dp[i][j]);
-
+        
         return result;
     }
 };
-int main(){
-    vector<vector<char>> grid = {{'0','E','0','0'},{'E','0','W','E'},{'0','E','0','0'}};
-    Solution sol;
-    cout << "Ans: " << sol.maxKilledEnemies(grid) << endl;
-}

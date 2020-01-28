@@ -1,0 +1,26 @@
+1. How to Start:
+	1. Rquirements - What
+	2. User Journey - How
+
+2. Massive System with all containee as componenets & all provided interface.
+3. Spilt the massive system based on type of system identified. Keep SOLID in mind while spliting the component & interfaces. => measure with coupling & cohesion in the system.
+4. Some Control & Boundary object can be identified during user journey(How) & some during splitting.
+
+Types of system can be:
+	1. Resource Management/Central-Peripheral => both will have components and their set of interfaces. Central system works as a controller for cross over 
+	Communications -> delegate resposibility as periferal exposes some intefaces to central system.
+	Scheduling -> host algorithms to manage requests.
+	Resource mangement -> scheduling and other controlls to manage resources.
+	Central System as facade -> Calls mutiple roles internally
+	ex. Computer Processor, Parking, Lift
+
+	2. Client-Server => MVC -> view, controller(Single/Multiple[Master-Slave]), services, models.
+	3. Games => Rules, Moves, GameComponents.
+	GameEngine/GameLoop/GameController -> Manages the board & pieces(Resource Controller), All Game action/transactions happens via this
+		
+	4. Complex object representation => SOLID + Data Structure -> ex. Deck of Cards, Snakes & Ladders
+	5. Pattarn oriented design - File system, Alarm system.
+	6. Data structure design - LRU Cache
+
+Some of design will be focused on Algorthm design than OOD. ex - JSON Parser, Object Serializer etc.
+

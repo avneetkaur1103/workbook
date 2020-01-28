@@ -1,9 +1,12 @@
-This week:
-Tree(Revisit) - by 30th
-Tree(Code) - 3rd
-Segment Tree(Code) - 3rd
-Stack & Heap - 4th
-Graph & Devide & Concur - 5th & 6th
-Arrays & String - 5th & 6th
-DP(CrackCode) - 7th
-Mock - 8th, 9th, 10th
+22 - 01 - 20
+Redesign Parking lot
+5 DP Questions
+
+# -------------
+HashMaps & HashSets - 23rd
+DP, Devide & Conquer - 19th & 20th
+2 Ptr, Arrays & String - 26th & 27th
+Trees - 28th
+Graph - 29th
+Stacks & Queues - 30th
+Backtracking

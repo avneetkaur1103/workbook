@@ -36,7 +36,7 @@ e. What components need better load balancing?
 # ------------ Tiny Url & PasteBin --------------
 1. Requirements.
 	a. short a given url and return url or HTTP404 => create_short_url(url,ttl=default)
-	b. redirect a sorted url => redirect(short_url)
+	b. redirect a shortend url => redirect(short_url)
 	extra: cleanup expired url, url should not be guessable, low-latency, highly-available, url-length
 
 2. Interface: Done
