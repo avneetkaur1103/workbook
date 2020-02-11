@@ -1,3 +1,4 @@
+// https://leetcode.com/explore/interview/card/google/59/array-and-strings/3049/
 #include <bits/stdc++.h>
 using namespace std;
 #define all(c) c.begin(), c.end()

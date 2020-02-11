@@ -3,7 +3,7 @@ https://www.geeksforgeeks.org/count-numbers-that-dont-contain-3/
 'msd' --> the most significant digit in n 
 'd'   --> number of digits in n.
 count(n) = n if n < 3
-count(n) = n - 1 if 3 <= n  10 and msd is not 3
+count(n) = n - 1 if 3 <= n < 10 and msd is not 3
 count(n) = count( msd * (10^(d-1)) - 1) 
            if n > 10 and msd is 3
 */

@@ -1,0 +1,42 @@
+Leadership :- Ex. Game Even 
+Googleyness:- how you navigate ambiguity(Problem solving in real life), and how you push yourself to grow outside of your comfort zone(Driven/Self Motivated).
+Ex. -> Driven:- Picking up the first project at work. Forming the team for game 
+	-> Ambiguity:- Different design and budget aspiration for Smart ALF project - narrowed down the boundary, worked extra hours, support from architect motivated me etc.
+
+# ------------------------------------------
+Q - Describe two specific goals you set for yourself and how successful you were in meeting them. What
+factors led to your success?
+Ans - 1. To understand the project design. [progress tracking scale] - less of why and more of how.
+	2. hell dirty my hands with functional programming language - faster prototyping, increases the chances with a good finished prototype, can help in leadership roles, personal aspirations. [pts] - how good is the prototype. improvising on match percentage 
+
+Things to consider for your answer:
+	● Your objectives—be clear on those up front.
+	● Reasons you chose those particular goals.
+	● Any measures you set up to track progress.
+	● Obstacles you overcome and things learned along the way.
+
+Q - Tell me about a time when you failed to meet a deadline. What did you fail to do? What did you learn?
+Ans - The initial SI Viewer project. With good UI and basic use cases everyone believed it's good. Not reviewed by competent developer and at that point I was also not very comfortable to the so roughly had to agree on the initial deadline. The tools and all are considered ad-hoc projects from budget perspective and it was tough for me to make them believe that these deserves same design sincerity. It pushed for it but I had settle with suboptimal set of feature. Although, I listed all my finding for it to be considered and future and it's being worked upon.
+
+Learning - Companies/Team may have different culture and way at looking the problem. Our company is very focused and directed towards customer experience, it leaves them with less time and budget for in house development. I guess I missed this mission. Later I had more clarity about the boundaries and that helped me.
+
+	Things to consider for your answer:
+	● The root cause.
+	● How you applied what you learned in future projects.
+
+Q - Conflict with manager.
+A - APIv2 migration strategy - 1. Run before you work - got tired pretty early
+	2. Take a step back
+	We discussed out on pros and cons of our strategy and she split up team in two and with different strategy, later we ended up complimenting each other we helped them where they were blocked and they helped in getting basic and boilerplates ready for a good start.
+
+# ------------------ Hypothetical ---------------------
+Q - Imagine you are in charge of organizing the grand opening of a new Google office in Bangalore, India.
+What steps would you take to plan this event?
+	Things to Consider for your answer:
+	● The objective of the event, and measurement of success.
+	● Who will be invited to the event.
+	● Logistics around the event, set-up, location, timing.
+	● Stakeholders to involve in the process.
+
+How you apply your problem solving skill and philosophy at work and in life.
+Why - How - Test Progress/Success - Finish - Propagate

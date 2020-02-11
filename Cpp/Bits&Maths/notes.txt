@@ -41,7 +41,7 @@ for i in range(n-1,0,-1): # select pos
         arr[i],arr[j] = arr[j],arr[i]
 
 For a shuffle to be random:
-1. For a selected pos all elements get equal probability equal probability.
+1. For a selected pos all elements get equal probability.
 works in growing range like stream as well. => can be used in reservoir sampling.
 # ---------------------
 Binomial Coeff:
@@ -64,7 +64,7 @@ Turn of the rightmost set bit => n & (n - 1);
 Half Adder:
     while (y != 0)  
     {  
-        int carry = x & y;  
+        int carry = x & y;
         x = x ^ y;  
         y = carry << 1;  
     }  

@@ -3,10 +3,20 @@ Redesign Parking lot
 5 DP Questions
 
 # -------------
+Trees - 28th - Done
+Graph - 29th - Partially Done
 HashMaps & HashSets - 23rd
-DP, Devide & Conquer - 19th & 20th
-2 Ptr, Arrays & String - 26th & 27th
-Trees - 28th
-Graph - 29th
-Stacks & Queues - 30th
-Backtracking
+DP, Devide & Conquer - TBD
+2 Ptr, Arrays & String - 1st & 2nd
+Stacks & Queues -  1st & 2nd
+Backtracking - TBD
+
+# ---- How to manage leaves
+ 6-13th
+
+Eleminate Errors/Mistakes
+
+# -------- 3rd Feb
+Finish Arrays & String - 2 problems.
+Finish code revisite
+Finish Stack

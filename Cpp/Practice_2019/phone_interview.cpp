@@ -1,5 +1,3 @@
-Please use this Google doc during your interview (your interviewer will see what you write here). To free your hands for typing, we recommend using a headset or speakerphone.
-
 #include <bits/stdc++.h>
 using namespace std;
 #define all(c) c.begin(), c.end()
@@ -70,4 +68,56 @@ if(N - (root->left->val+2) == 0)
 	return root
 else
 	goright , N - (root->left->val+2)
+
+
+# --------------------
+There are n warriors in a war. Each warrior has a power P and a Direction d(left or right). 
+Two warriors moving in opposite direction will collide and the warrior with more power will kill the warrior with lesser power. 
+Find the warriors left after all the coliisions are complete.
+
+
+W1    W2     W3
+->    <-      <-
+
+
+W1 8
+W2 7
+W3 10
+
+Final Warrior Left : W3
+
+vector<int> dir = [0,1,1];
+W1 W2 =>  W1
+W1 W3 => W3
+
+10 elements index = 10 20
+
+W1    W2     W3
+->    ->     ->
+
+Insertion  => for each element => O(1)*n
+Deletion from stack => for each element => O(1)*n
+Space => O(n) / Time = O(n);
+
+stack<int> warriorsAlive(vector<string> warriors, vector<int>& dir, vector<int>& power){
+    stack<int> st;
+    int n = warriors.size();
+    for(int i = 0; i < n; i++){
+        while(!st.empty()){
+            int tmp = st.top();
+            if(dir[tmp] == 0 && dir[i] == 1){
+                if(power[i] > power[tmp])
+                    st.pop(); 
+                else{
+                    break; 
+                }
+            }
+            else
+                break;
+        }
+        if(stack.empty() || !(dir[st.top()] ^ dir[i])  || dir[tmp] == 1 && dir[i] == 0)
+            st.push(i); 
+    }
+    return stack;
+}
 
