@@ -30,7 +30,7 @@ D — Dependency Inversion principle
 				sum += 2.PI.shape.r; => not coded to interface violates open close principle.
 			else if((shape = dynamic_cast<Square*> s)!= nullptr)
 				sum += shape.width*shape.h
-
+		}
 		formatted_json_output() => This shouldn't be here, formatting & printing is not a part of this functions responsibility.
 	}
 
@@ -108,7 +108,7 @@ Approach - Keep it simple.
 Requirement in terms of user stories
 1. As a ______, I want to ______ so that ______.
 You can apply object-oriented thinking to it to discover objects and possibly further requirements!
-Usually, the nouns correspond to objects in your software. Verbs can help you identify the requirements that your objects might have.  Verbs may also help you identify connections between objects.
+Usually, the nouns correspond to objects in your software. Verbs can help you identify the requirements that your objects might have. Verbs may also help you identify connections between objects.
 
 Functional Requirements - what system does? - must be implemented
 Non-Functional Requirements - How it works in different situations? - Availability/Performance/Scalability - which are mostly competing.

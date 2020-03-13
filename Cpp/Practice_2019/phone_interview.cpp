@@ -121,3 +121,51 @@ stack<int> warriorsAlive(vector<string> warriors, vector<int>& dir, vector<int>&
     return stack;
 }
 
+
+# --------------
+FreshWorks
+TreeNode* delete_k(TreeNode* root, int k){ // Time => O(n)/ O(logn)
+
+kottakat@amazon.com
+class Payment{
+    AbstractPaymentGatewayAPI* pref;
+    list<Transaction> allTransaction;
+    
+    requestPayment(Transaction *tr){
+        bool success = pref->pay(tr->amount);
+        //retry queue
+    }
+};
+
+class PaymentGatewayAPIAdapter{
+    PaymentGatewayAPI* pref; // diff 3rd paty libs strategy
+    
+    pay(amount){
+        pref->pay(amount);
+    }
+    
+    setAPI(PaymentGatewayAPI*& ref){
+        pref = ref
+    }
+};
+
+Payment pay = new Payment();
+
+class Transaction{
+    Ride rideID;
+    int amount;
+    
+    initiatePay(){
+        p->requestPayment(amount)
+    }
+};
+class Ride{
+    User user;
+    Transaction *tr;
+    pair<int, int> startLoc;
+    pair<int, int> endLoc;
+    int amount;
+    onRideFinish(){
+        tr->initiatePay();
+    }
+};

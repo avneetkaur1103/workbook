@@ -16,7 +16,7 @@ Backtracking - TBD
 
 Eleminate Errors/Mistakes
 
-# -------- 3rd Feb
-Finish Arrays & String - 2 problems.
-Finish code revisite
-Finish Stack
+# -------- 4th March 
+2 Design - Cloud Billing System, Rate limiter
+Code Revisit - 
+Solve some DP 

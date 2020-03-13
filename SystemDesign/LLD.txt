@@ -9,7 +9,7 @@
 Types of system can be:
 	1. Resource Management/Central-Peripheral => both will have components and their set of interfaces. Central system works as a controller for cross over 
 	Communications -> delegate resposibility as periferal exposes some intefaces to central system.
-	Scheduling -> host algorithms to manage requests.
+	Scheduling -> hosts algorithms to manage requests.
 	Resource mangement -> scheduling and other controlls to manage resources.
 	Central System as facade -> Calls mutiple roles internally
 	ex. Computer Processor, Parking, Lift
